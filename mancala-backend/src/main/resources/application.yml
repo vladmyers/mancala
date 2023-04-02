@@ -1,0 +1,5 @@
+spring.application.name: mancala
+
+springdoc:
+  swagger-ui.path: /swagger-ui.html
+  packagesToScan: com.bol.mancala.controller
