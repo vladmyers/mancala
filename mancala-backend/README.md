@@ -1,4 +1,4 @@
-# Mancala Frontend
+# Mancala Backend
 
 For more information, please refer to the root [README] file.
 
@@ -10,17 +10,17 @@ For more information, please refer to the root [README] file.
 
 # Intro
 
-This is the frontend module of the Mancala game implementation based on a maven multi-module project.
+This is the backend module of the Mancala game implementation based on a maven multi-module project.
 
 # Usage
 
-To start the frontend project, follow the steps below:
+To start the backend project, follow the steps below:
 
 1. Navigate to the [mancala-backend] directory
-2. Run the command `mvn clean install` to install the necessary dependencies
-3. Run the command `npm start` to start the development server
+2. Run the command `mvn clean install` to build the project
+3. Start the backend server: `mvn spring-boot:run`
 
-The frontend project should be accessible in browser at http://localhost:3000
+The backend should be accessible in browser at http://localhost:8080
 
 # License
 
@@ -36,6 +36,6 @@ For instructions on how to run the full Mancala game application, please refer t
 [Usage]: #usage
 [License]: #license
 
-[mancala-frontend]: ../mancala-frontend
+[mancala-backend]: ../mancala-backend 
 [LICENSE]: ../LICENSE.txt
 [README]: ../README.md
