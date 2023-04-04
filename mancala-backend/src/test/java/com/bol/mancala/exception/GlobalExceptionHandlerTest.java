@@ -1,6 +1,6 @@
 package com.bol.mancala.exception;
 
-import com.bol.mancala.controller.PlayerApi;
+import com.bol.mancala.controller.v1.PlayerApi;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,11 @@ class GlobalExceptionHandlerTest {
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error.displayMessage").value(ErrorMessage.CONTROLLER_HTTP_REQUEST_METHOD_NOT_SUPPORTED.getMessage()))
-                .andExpect(jsonPath("$.error.message").value("Request method 'POST' is not supported"));
+                .andExpect(jsonPath("$.uuid").exists())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.error").exists())
+                .andExpect(jsonPath("$.error.message").value("Request method 'POST' is not supported"))
+                .andExpect(jsonPath("$.error.displayMessage").value(ErrorMessage.CONTROLLER_HTTP_REQUEST_METHOD_NOT_SUPPORTED.getMessage()));
     }
 
     //TODO: tests for the rest exception handlers
