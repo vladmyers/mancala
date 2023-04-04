@@ -47,7 +47,6 @@ class WaitingRoomServiceTest {
         playerService.deleteBy(playerUuid2);
         playerService.deleteBy(playerUuid3);
         waitingRoomService.close(waitingRoomUuid1, WaitingRoomOutcome.LEFT_BY_PLAYER);
-        waitingRoomService.close(waitingRoomUuid2, WaitingRoomOutcome.LEFT_BY_PLAYER);
     }
 
     @Test
@@ -103,6 +102,13 @@ class WaitingRoomServiceTest {
         waitingRoomService.close(waitingRoomUuid2, WaitingRoomOutcome.LEFT_BY_PLAYER);
 
         assertFalse(waitingRoomService.existsBy(waitingRoomUuid2));
+    }
+
+    @Test
+    void closeByTestNotFound() {
+        var exception = assertThrows(IllegalArgumentException.class,
+                () -> waitingRoomService.close(uuidNonExistent, WaitingRoomOutcome.LEFT_BY_PLAYER));
+        assertEquals("Waiting room was not found by uuid=" + uuidNonExistent, exception.getMessage());
     }
 
 }

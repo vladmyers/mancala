@@ -81,13 +81,20 @@ public class WaitingRoomService {
 
     /** Closes Waiting Room by its uuid without the joined player */
     public void close(UUID uuid, WaitingRoomOutcome outcome) {
+        validateWaitingRoomExistsBy(uuid);
         validateOutcomeWithoutJoinedPlayer(outcome);
 
         close(uuid, outcome, null);
     }
 
+    private void validateWaitingRoomExistsBy(UUID waitingRoomUuid) {
+        if (!uuidToWaitingRoomOpenedMap.containsKey(waitingRoomUuid)) {
+            throw new IllegalArgumentException(format(ERROR_WAITING_ROOM_NOT_FOUND, waitingRoomUuid));
+        }
+    }
+
     private void validatePlayerExistsBy(UUID playerUuid) {
-        if (!playerService.existBy(playerUuid)) {
+        if (playerUuid != null && !playerService.existBy(playerUuid)) {
             throw new IllegalArgumentException(format(ERROR_PLAYER_NOT_FOUND, playerUuid));
         }
     }
