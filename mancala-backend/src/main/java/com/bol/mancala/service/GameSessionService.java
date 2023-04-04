@@ -6,9 +6,9 @@ import com.bol.mancala.model.WaitingRoom;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Game Session service
@@ -20,7 +20,7 @@ public class GameSessionService {
     private final WaitingRoomService waitingRoomService;
     private final GameInitService gameInitService;
 
-    private final Map<UUID, GameSession> uuidToGameSessionMap = new HashMap<>();
+    private final Map<UUID, GameSession> uuidToGameSessionMap = new ConcurrentHashMap<>();
 
     public UUID create(UUID waitingRoomUuid) {
         validateWaitingRoomExistsBy(waitingRoomUuid);
@@ -47,13 +47,13 @@ public class GameSessionService {
 
     private void validateWaitingRoomExistsBy(UUID waitingRoomUuid) {
         if (!waitingRoomService.existsBy(waitingRoomUuid)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Waiting room was not found");
         }
     }
 
     private static void validateWaitingRoom(WaitingRoom waitingRoom) {
         if (waitingRoom.getJoinedPlayerUuid() == null) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("joinedPlayerUuid is required");
         }
     }
 

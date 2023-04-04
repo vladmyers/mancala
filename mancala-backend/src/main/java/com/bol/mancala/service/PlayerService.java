@@ -4,11 +4,11 @@ import com.bol.mancala.model.Player;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Player service
@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PlayerService {
 
-    private final Map<UUID, Player> uuidToPlayerMap = new HashMap<>();
+    private final Map<UUID, Player> uuidToPlayerMap = new ConcurrentHashMap<>();
 
     public Set<Player> getAll() {
         return new HashSet<>(uuidToPlayerMap.values());

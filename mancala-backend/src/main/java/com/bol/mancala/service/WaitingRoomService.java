@@ -6,10 +6,10 @@ import com.bol.mancala.util.LocalDateTimeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 
@@ -27,11 +27,11 @@ public class WaitingRoomService {
     private final PlayerService playerService;
 
     /** Opened Waiting Rooms */
-    private final Map<UUID, WaitingRoom> uuidToWaitingRoomOpenedMap = new HashMap<>();
+    private final Map<UUID, WaitingRoom> uuidToWaitingRoomOpenedMap = new ConcurrentHashMap<>();
 
     //TODO: get stats from waiting room history
     /** Closed Waiting Rooms - history */
-    private final Map<UUID, WaitingRoom> uuidToWaitingRoomClosedMap = new HashMap<>();
+    private final Map<UUID, WaitingRoom> uuidToWaitingRoomClosedMap = new ConcurrentHashMap<>();
 
     /** Creates Waiting Room with the specified player and returns its uuid */
     public UUID create(UUID playerUuid) {
