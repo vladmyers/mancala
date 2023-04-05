@@ -19,6 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public final class WaitingRoom {
 
+    @Builder.Default
     private final UUID uuid = UUID.randomUUID();
 
     private final UUID waitingPlayerUuid;
