@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>mancala-backend</artifactId>
+    <version>0.0.1</version>
     <description>Mancala Game backend</description>
 
     <properties>
