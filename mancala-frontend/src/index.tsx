@@ -1,10 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import GameLobby from "./GameLobby";
+import ReactDOM from 'react-dom/client';
+import {BrowserRouter} from 'react-router-dom';
 
-ReactDOM.render(
+import configure from "./service/config/Configuration";
+import App from './App';
+
+configure();
+
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+root.render(
     <React.StrictMode>
-        <GameLobby/>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById('root')
 );
