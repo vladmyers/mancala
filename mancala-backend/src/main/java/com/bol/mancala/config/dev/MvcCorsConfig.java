@@ -1,15 +1,14 @@
 package com.bol.mancala.config.dev;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Disable CORS for development
+ * Disable CORS
  */
+//TODO: enable only for development using @Profile("local")
 @Configuration
-@Profile("local")
 public class MvcCorsConfig implements WebMvcConfigurer {
 
     @Override
