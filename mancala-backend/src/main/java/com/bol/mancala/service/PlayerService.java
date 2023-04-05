@@ -23,15 +23,10 @@ public class PlayerService {
         return new HashSet<>(uuidToPlayerMap.values());
     }
 
-    public UUID create(String username) {
-        Player player = Player.builder()
-                .username(username)
-                .build();
-
-        UUID playerUuid = player.getUuid();
-        uuidToPlayerMap.put(playerUuid, player);
-
-        return playerUuid;
+    public Player create(String username) {
+        Player player = Player.builder().username(username).build();
+        uuidToPlayerMap.put(player.getUuid(), player);
+        return player;
     }
 
     public boolean existBy(UUID uuid) {

@@ -1,7 +1,7 @@
 package com.bol.mancala.service;
 
 import com.bol.mancala.model.WaitingRoom;
-import com.bol.mancala.type.WaitingRoomOutcome;
+import com.bol.mancala.type.WaitingRoomState;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,11 +35,11 @@ class WaitingRoomServiceTest {
 
     @BeforeAll
     void beforeAll() {
-        playerUuid1 = playerService.create("user1");
-        playerUuid2 = playerService.create("user2");
-        playerUuid3 = playerService.create("user3");
-        waitingRoomUuid1 = waitingRoomService.create(playerUuid2);
-        waitingRoomUuid2 = waitingRoomService.create(playerUuid3);
+        playerUuid1 = playerService.create("user1").getUuid();
+        playerUuid2 = playerService.create("user2").getUuid();
+        playerUuid3 = playerService.create("user3").getUuid();
+        waitingRoomUuid1 = waitingRoomService.create(playerUuid2).getUuid();
+        waitingRoomUuid2 = waitingRoomService.create(playerUuid3).getUuid();
     }
 
     @AfterAll
@@ -46,20 +47,22 @@ class WaitingRoomServiceTest {
         playerService.deleteBy(playerUuid1);
         playerService.deleteBy(playerUuid2);
         playerService.deleteBy(playerUuid3);
-        waitingRoomService.close(waitingRoomUuid1, WaitingRoomOutcome.LEFT_BY_PLAYER);
+        waitingRoomService.close(waitingRoomUuid1, WaitingRoomState.LEFT_BY_PLAYER);
     }
 
     @Test
     void create() {
-        UUID uuid = waitingRoomService.create(playerUuid1);
-
-        assertNotNull(uuid);
-
-        WaitingRoom created = waitingRoomService.getBy(uuid);
+        WaitingRoom created = waitingRoomService.create(playerUuid1);
 
         assertNotNull(created);
+
         assertNotNull(created.getCreatedDateTime());
+        assertNull(created.getFinishedDateTime());
+
         assertNotNull(created.getWaitingPlayerUuid());
+        assertNull(created.getJoinedPlayerUuid());
+
+        assertEquals(WaitingRoomState.OPENED, created.getState());
     }
 
     @Test
@@ -99,7 +102,7 @@ class WaitingRoomServiceTest {
 
     @Test
     void closeBy() {
-        waitingRoomService.close(waitingRoomUuid2, WaitingRoomOutcome.LEFT_BY_PLAYER);
+        waitingRoomService.close(waitingRoomUuid2, WaitingRoomState.LEFT_BY_PLAYER);
 
         assertFalse(waitingRoomService.existsBy(waitingRoomUuid2));
     }
@@ -107,7 +110,7 @@ class WaitingRoomServiceTest {
     @Test
     void closeByTestNotFound() {
         var exception = assertThrows(IllegalArgumentException.class,
-                () -> waitingRoomService.close(uuidNonExistent, WaitingRoomOutcome.LEFT_BY_PLAYER));
+                () -> waitingRoomService.close(uuidNonExistent, WaitingRoomState.LEFT_BY_PLAYER));
         assertEquals("Waiting room was not found by uuid=" + uuidNonExistent, exception.getMessage());
     }
 

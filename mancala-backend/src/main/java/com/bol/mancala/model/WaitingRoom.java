@@ -1,6 +1,6 @@
 package com.bol.mancala.model;
 
-import com.bol.mancala.type.WaitingRoomOutcome;
+import com.bol.mancala.type.WaitingRoomState;
 import com.bol.mancala.util.LocalDateTimeUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +26,8 @@ public final class WaitingRoom {
     /** Uuid of player that has joined the waiting room until it was closed; otherwise - {@code null} */
     private final UUID joinedPlayerUuid;
 
-    /** Waiting room outcome if it's closed; otherwise - {@code null} */
-    private final WaitingRoomOutcome outcome;
+    @Builder.Default
+    private final WaitingRoomState state = WaitingRoomState.OPENED;
 
     @Builder.Default
     private final LocalDateTime createdDateTime = LocalDateTimeUtil.nowUtc();

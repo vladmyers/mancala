@@ -5,16 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Waiting Room outcome
+ * Waiting Room state
  */
 @Getter
 @AllArgsConstructor
-@Schema(description = "Waiting Room outcome", enumAsRef = true)
-public enum WaitingRoomOutcome {
+@Schema(description = "Waiting Room state", enumAsRef = true)
+public enum WaitingRoomState {
 
+    OPENED("Waiting for another player"),
+    WAITING_FOR_GAME_SESSION("Waiting for a game session to start"),
     GAME_SESSION_STARTED("Game session has started"),
     LEFT_BY_PLAYER("Player has left the room"),
-    //TODO: implement waiting timeout
     TIMEOUT("Waiting timeout has exceeded");
 
     private final String description;

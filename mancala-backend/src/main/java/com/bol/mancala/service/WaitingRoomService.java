@@ -1,11 +1,12 @@
 package com.bol.mancala.service;
 
 import com.bol.mancala.model.WaitingRoom;
-import com.bol.mancala.type.WaitingRoomOutcome;
+import com.bol.mancala.type.WaitingRoomState;
 import com.bol.mancala.util.LocalDateTimeUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,23 +34,31 @@ public class WaitingRoomService {
     /** Closed Waiting Rooms - history */
     private final Map<UUID, WaitingRoom> uuidToWaitingRoomClosedMap = new ConcurrentHashMap<>();
 
-    /** Creates Waiting Room with the specified player and returns its uuid */
-    public UUID create(UUID playerUuid) {
+    /** Creates Waiting Room with the specified player and returns it */
+    public WaitingRoom create(UUID playerUuid) {
         validatePlayerBy(playerUuid);
 
         WaitingRoom waitingRoom = WaitingRoom.builder().waitingPlayerUuid(playerUuid).build();
         uuidToWaitingRoomOpenedMap.put(waitingRoom.getUuid(), waitingRoom);
 
-        return waitingRoom.getUuid();
+        return waitingRoom;
     }
 
-    /** Joins an existing waiting room or creates a new one for the specified player and returns its UUID */
-    public UUID joinOrCreate(UUID playerUuid) {
-        validatePlayerBy(playerUuid);
+    /** Joins the earliest waiting room or creates a new one for the specified player and returns it */
+    public WaitingRoom joinOrCreate(UUID playerUuid) {
+        validatePlayerExistsBy(playerUuid);
 
-        return uuidToWaitingRoomOpenedMap.values().stream()
-                .findAny()
-                .map(WaitingRoom::getUuid)
+        WaitingRoom waitingRoomExistingWithPlayer = getExistingWaitingRoomWithPlayer(playerUuid);
+        if (waitingRoomExistingWithPlayer != null) {
+            return waitingRoomExistingWithPlayer;
+        }
+
+        Optional<WaitingRoom> waitingRoomExistingOp = uuidToWaitingRoomOpenedMap.values()
+                .stream()
+                .filter(waitingRoom -> WaitingRoomState.OPENED.equals(waitingRoom.getState()))
+                .min(Comparator.comparing(WaitingRoom::getCreatedDateTime));
+
+        return waitingRoomExistingOp.map(waitingRoom -> join(playerUuid, waitingRoom))
                 .orElseGet(() -> create(playerUuid));
     }
 
@@ -65,13 +74,13 @@ public class WaitingRoomService {
     }
 
     /** Closes Waiting Room by its uuid */
-    public void close(UUID uuid, WaitingRoomOutcome outcome, UUID joinedPlayerUuid) {
+    public void close(UUID uuid, WaitingRoomState outcome, UUID joinedPlayerUuid) {
         validatePlayerExistsBy(joinedPlayerUuid);
 
         WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.remove(uuid);
 
         WaitingRoom waitingRoomClosed = waitingRoom.toBuilder()
-                .outcome(outcome)
+                .state(outcome)
                 .joinedPlayerUuid(joinedPlayerUuid)
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
                 .build();
@@ -80,11 +89,30 @@ public class WaitingRoomService {
     }
 
     /** Closes Waiting Room by its uuid without the joined player */
-    public void close(UUID uuid, WaitingRoomOutcome outcome) {
+    public void close(UUID uuid, WaitingRoomState outcome) {
         validateWaitingRoomExistsBy(uuid);
         validateOutcomeWithoutJoinedPlayer(outcome);
 
         close(uuid, outcome, null);
+    }
+
+    private WaitingRoom join(UUID playerUuid, WaitingRoom waitingRoom) {
+        WaitingRoom waitingRoomJoined = waitingRoom.toBuilder()
+                .joinedPlayerUuid(playerUuid)
+                .state(WaitingRoomState.WAITING_FOR_GAME_SESSION)
+                .finishedDateTime(LocalDateTimeUtil.nowUtc())
+                .build();
+
+        uuidToWaitingRoomOpenedMap.put(waitingRoomJoined.getUuid(), waitingRoomJoined);
+
+        return waitingRoomJoined;
+    }
+
+    private WaitingRoom getExistingWaitingRoomWithPlayer(UUID playerUuid) {
+        return uuidToWaitingRoomOpenedMap.values().stream()
+                .filter(waitingRoom -> waitingRoom.getWaitingPlayerUuid().equals(playerUuid))
+                .findFirst()
+                .orElse(null);
     }
 
     private void validateWaitingRoomExistsBy(UUID waitingRoomUuid) {
@@ -113,8 +141,8 @@ public class WaitingRoomService {
         }
     }
 
-    private static void validateOutcomeWithoutJoinedPlayer(WaitingRoomOutcome outcome) {
-        if (WaitingRoomOutcome.GAME_SESSION_STARTED == outcome) {
+    private static void validateOutcomeWithoutJoinedPlayer(WaitingRoomState outcome) {
+        if (WaitingRoomState.GAME_SESSION_STARTED == outcome) {
             throw new IllegalArgumentException("joinedPlayerUuid is required");
         }
     }
