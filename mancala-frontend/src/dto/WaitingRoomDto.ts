@@ -1,4 +1,4 @@
-import WaitingRoomState from "./WaitingRoomState";
+import WaitingRoomState from "./type/WaitingRoomState";
 
 /**
  * Waiting Room
@@ -6,8 +6,8 @@ import WaitingRoomState from "./WaitingRoomState";
 export interface WaitingRoomDto {
     uuid: string;
     waitingPlayerUuid: string;
-    joinedPlayerUuid: string;
+    joinedPlayerUuid?: string;
     state: WaitingRoomState;
     createdDateTime: Date;
-    finishedDateTime: Date;
+    finishedDateTime?: Date;
 }
