@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,13 +76,15 @@ public class WaitingRoomService {
     }
 
     /** Closes Waiting Room by its uuid */
-    public void close(UUID uuid, WaitingRoomState outcome, UUID joinedPlayerUuid) {
+    public void close(UUID uuid, WaitingRoomState state, UUID joinedPlayerUuid) {
+        //TODO: refactor this method and add validateStateForWaitingRoom()
+        // as long as for 'game has started' state joinedPlayerUuid should exist in waitingRoom
         validatePlayerExistsBy(joinedPlayerUuid);
 
         WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.remove(uuid);
 
         WaitingRoom waitingRoomClosed = waitingRoom.toBuilder()
-                .state(outcome)
+                .state(state)
                 .joinedPlayerUuid(joinedPlayerUuid)
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
                 .build();
@@ -89,11 +93,24 @@ public class WaitingRoomService {
     }
 
     /** Closes Waiting Room by its uuid without the joined player */
-    public void close(UUID uuid, WaitingRoomState outcome) {
+    public void close(UUID uuid, WaitingRoomState state) {
         validateWaitingRoomExistsBy(uuid);
-        validateOutcomeWithoutJoinedPlayer(outcome);
+        validateStateWithoutJoinedPlayer(state);
 
-        close(uuid, outcome, null);
+        close(uuid, state, null);
+    }
+
+    /** Returns all Waiting Rooms */
+    public Set<WaitingRoom> getAll() {
+        HashSet<WaitingRoom> waitingRooms = new HashSet<>(uuidToWaitingRoomOpenedMap.values());
+        waitingRooms.addAll(uuidToWaitingRoomClosedMap.values());
+        return waitingRooms;
+    }
+
+    private static void validateStateWithoutJoinedPlayer(WaitingRoomState state) {
+        if (WaitingRoomState.GAME_SESSION_STARTED == state) {
+            throw new IllegalArgumentException("joinedPlayerUuid is required");
+        }
     }
 
     private WaitingRoom join(UUID playerUuid, WaitingRoom waitingRoom) {
@@ -138,12 +155,6 @@ public class WaitingRoomService {
                 .anyMatch(waitingRoom -> waitingRoom.getWaitingPlayerUuid().equals(playerUuid));
         if (playerIsAlreadyInWaitingRoom) {
             throw new IllegalArgumentException(format(ERROR_PLAYER_IS_ALREADY_IN_WAITING_ROOM, playerUuid));
-        }
-    }
-
-    private static void validateOutcomeWithoutJoinedPlayer(WaitingRoomState outcome) {
-        if (WaitingRoomState.GAME_SESSION_STARTED == outcome) {
-            throw new IllegalArgumentException("joinedPlayerUuid is required");
         }
     }
 
