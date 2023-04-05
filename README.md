@@ -46,7 +46,7 @@ The objective of the game is to capture more seeds than the opponent by collecti
 
 ## Installation
 
-Clone the repository: `git clone https://github.com/vladmyers/mancala-game.git`
+Clone the repository: `git clone https://github.com/vladmyers/mancala.git`
 
 ### Build all modules
 1. Navigate to the project [root directory]
