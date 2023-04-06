@@ -84,7 +84,7 @@ public class GameSessionService {
             throw new IllegalArgumentException("The Game Session is already finished");
         }
 
-        if (gameSession.getWinnerUuid() == null) {
+        if (!gameSession.isLeft() && gameSession.getWinnerUuid() == null) {
             throw new IllegalArgumentException("The Game Session can't be finished if winnerUuid is not provided");
         }
     }

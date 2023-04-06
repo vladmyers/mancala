@@ -29,12 +29,9 @@ public class WaitingRoomService {
 
     private final PlayerService playerService;
 
-    /** Opened Waiting Rooms */
+    //TODO: get stats
+    /** Waiting Rooms */
     private final Map<UUID, WaitingRoom> uuidToWaitingRoomOpenedMap = new ConcurrentHashMap<>();
-
-    //TODO: get stats from waiting room history
-    /** Closed Waiting Rooms - history */
-    private final Map<UUID, WaitingRoom> uuidToWaitingRoomClosedMap = new ConcurrentHashMap<>();
 
     /** Creates Waiting Room with the specified player and returns it */
     public WaitingRoom create(UUID playerUuid) {
@@ -71,8 +68,11 @@ public class WaitingRoomService {
 
     /** Returns Waiting Room by its uuid */
     public WaitingRoom getBy(UUID uuid) {
-        return Optional.ofNullable(uuidToWaitingRoomOpenedMap.get(uuid)).orElseThrow(
-                () -> new IllegalArgumentException(format(ERROR_WAITING_ROOM_NOT_FOUND, uuid)));
+        WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.get(uuid);
+        if (waitingRoom == null) {
+            throw new IllegalArgumentException(format(ERROR_WAITING_ROOM_NOT_FOUND, uuid));
+        }
+        return waitingRoom;
     }
 
     /** Closes Waiting Room by its uuid */
@@ -81,7 +81,7 @@ public class WaitingRoomService {
         // as long as for 'game has started' state joinedPlayerUuid should exist in waitingRoom
         validatePlayerExistsBy(joinedPlayerUuid);
 
-        WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.remove(uuid);
+        WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.get(uuid);
 
         WaitingRoom waitingRoomClosed = waitingRoom.toBuilder()
                 .state(state)
@@ -89,7 +89,7 @@ public class WaitingRoomService {
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
                 .build();
 
-        uuidToWaitingRoomClosedMap.put(waitingRoomClosed.getUuid(), waitingRoomClosed);
+        uuidToWaitingRoomOpenedMap.replace(waitingRoomClosed.getUuid(), waitingRoomClosed);
     }
 
     /** Closes Waiting Room by its uuid without the joined player */
@@ -102,9 +102,7 @@ public class WaitingRoomService {
 
     /** Returns all Waiting Rooms */
     public Set<WaitingRoom> getAll() {
-        HashSet<WaitingRoom> waitingRooms = new HashSet<>(uuidToWaitingRoomOpenedMap.values());
-        waitingRooms.addAll(uuidToWaitingRoomClosedMap.values());
-        return waitingRooms;
+        return new HashSet<>(uuidToWaitingRoomOpenedMap.values());
     }
 
     private static void validateStateWithoutJoinedPlayer(WaitingRoomState state) {
@@ -115,6 +113,7 @@ public class WaitingRoomService {
 
     private WaitingRoom join(UUID playerUuid, WaitingRoom waitingRoom) {
         WaitingRoom waitingRoomJoined = waitingRoom.toBuilder()
+                //.uuid(waitingRoom.getUuid())
                 .joinedPlayerUuid(playerUuid)
                 .state(WaitingRoomState.WAITING_FOR_GAME_SESSION)
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
