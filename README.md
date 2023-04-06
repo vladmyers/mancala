@@ -4,12 +4,12 @@
 
 * [Intro]
   * [About the game]
-* [Getting Started]
-  * [Installation]
+* [How to run]
+  * [Easy Way]
+  * [Build Manually]
     * [Build all modules]
     * [Build modules separately]
   * [Usage]
-  * [Running with Docker Compose]
 * [Tech stack]
   * [Common - across all modules]
   * [mancala-frontend module]
@@ -42,9 +42,14 @@ The objective of the game is to capture more seeds than the opponent by collecti
 5. The game ends when one player has no more stones on their side of the board
 6. The player with the most stones in their mancala at the end of the game wins
 
-# Getting Started
+# How to run
 
-## Installation
+## Easy Way
+
+1. Use the `docker-compose up` command in the project [root directory] to start the Docker containers with pre-configured images
+2. You can modify environment variables or port mappings by editing the [docker-compose.yml] file and running Docker Compose again
+
+## Build Manually
 
 Clone the repository: `git clone https://github.com/vladmyers/mancala.git`
 
@@ -61,15 +66,11 @@ Clone the repository: `git clone https://github.com/vladmyers/mancala.git`
 
 ## Usage
 
-1. Start the backend server: `mvn spring-boot:run`
-2. Start the frontend: `npm start`
-3. Navigate to http://localhost:3000 in your web browser
-
-## Running with Docker Compose
-
-1. Open the [docker-compose.yml] file and make any necessary modifications to the environment variables or 
-port mappings
-2. Run the following command to start the Docker containers: `docker-compose up`
+1. Switch to the [mancala-backend] directory: `cd ../mancala-backend`
+2. Start the backend server: `mvn spring-boot:run`
+3. Switch to the [mancala-frontend] directory: `cd ../mancala-frontend`
+4. Start the frontend: `npm start`
+5. Navigate to http://localhost:3000 in your web browser
 
 # Tech stack
 
@@ -125,11 +126,11 @@ This project is licensed under the Apache License 2.0. See the [LICENSE] file fo
 
 [Intro]: #intro
 [About the game]: #about-the-game
-[Getting Started]: #getting-started
-[Installation]: #installation
+[How to run]: #how-to-run
+[Build Manually]: #build-manually
 [Build all modules]: #build-all-modules
 [Build modules separately]: #build-modules-separately
-[Running with Docker Compose]: #running-with-docker-compose
+[Easy Way]: #easy-way
 [Usage]: #usage
 [Tech stack]: #tech-stack
 [Common - across all modules]: #common---across-all-modules
