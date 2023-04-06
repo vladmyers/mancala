@@ -25,8 +25,17 @@ public class GameSessionService {
 
     private final Map<UUID, GameSession> uuidToGameSessionMap = new ConcurrentHashMap<>();
 
-    public GameSession create(UUID waitingRoomUuid) {
+    public GameSession createOrJoinBy(UUID waitingRoomUuid) {
         validateWaitingRoomExistsBy(waitingRoomUuid);
+
+        //TODO: add to waitingRoom gameSessionUuid and get it here
+        GameSession gameSessionExisting = uuidToGameSessionMap.values().stream()
+                .filter(gameSession -> waitingRoomUuid.equals(gameSession.getWaitingRoomUuid()))
+                .findFirst()
+                .orElse(null);
+        if (gameSessionExisting != null) {
+            return gameSessionExisting;
+        }
 
         WaitingRoom waitingRoom = waitingRoomService.getBy(waitingRoomUuid);
         validateWaitingRoom(waitingRoom);

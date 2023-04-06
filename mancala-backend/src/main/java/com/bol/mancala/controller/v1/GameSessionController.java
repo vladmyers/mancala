@@ -22,7 +22,7 @@ public class GameSessionController implements GameSessionApi {
     private final GameSessionService gameSessionService;
 
     public RestResponse<GameSession> start(UUID waitingRoomUuid) {
-        return success(gameSessionService.create(waitingRoomUuid));
+        return success(gameSessionService.createOrJoinBy(waitingRoomUuid));
     }
 
     public RestResponse<GameSession> get(UUID uuid) {

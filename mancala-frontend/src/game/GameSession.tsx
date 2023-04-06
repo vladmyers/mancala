@@ -59,6 +59,8 @@ const GameSession = () => {
                         <div>
                             <div>Game session UUID: {gameSession.uuid}</div>
                             <div>Created date: {new Date(gameSession.createdDateTime).toLocaleString(navigator.language)}</div>
+                            <div>Player 1: {gameSession.playerOneUuid}</div>
+                            <div>Player 2: {gameSession.playerTwoUuid}</div>
                         </div>
                     )}
                     {errorMessage && (
