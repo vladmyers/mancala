@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,6 +15,7 @@ import java.util.UUID;
  * Game Session
  */
 @Getter
+@Setter
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public final class GameSession {
@@ -39,6 +41,11 @@ public final class GameSession {
 
     /** UUID of Player that has won, if the game session is ended; otherwise - {@code null} */
     private final UUID winnerUuid;
+
+    /** Indicates if game was left */
+    @NotNull
+    @Builder.Default
+    private final boolean isLeft = false;
 
     /** Waiting Room UUID this game session belongs to */
     @NotNull
