@@ -1,20 +1,22 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ServiceLocator } from '../service/ServiceLocator';
+import {useNavigate} from 'react-router-dom';
+import {ServiceLocator} from '../service/ServiceLocator';
 import WaitingRoomService from '../service/WaitingRoomService';
-import Header from '../component/Header';
-import Body from '../component/Body';
-import { AxiosError, AxiosResponse } from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 import {RestResponseError} from "../api/RestResponseError";
 import {RestResponse} from "../api/RestResponse";
 import {WaitingRoomDto} from "../dto/WaitingRoomDto";
 
-const WaitingRoom = () => {const navigate = useNavigate();
+import Header from '../component/Header';
+import Body from '../component/Body';
+
+const WaitingRoom = () => {
+    const navigate = useNavigate();
     const waitingRoomService: WaitingRoomService = ServiceLocator.get('waitingRoomService')!;
 
     const [errorMessage, setErrorMessage] = React.useState('');
     const [waitingRoomDto, setWaitingRoomDto] = React.useState<WaitingRoomDto>();
-    const [isLeft, setIsLeft] = React.useState(false);
+    const [intervalId, setIntervalId] = React.useState<NodeJS.Timer>();
 
     React.useEffect(() => {
         const playerUuid = sessionStorage.getItem('playerUuid');
@@ -25,14 +27,7 @@ const WaitingRoom = () => {const navigate = useNavigate();
         }
 
         waitingRoomService.join(playerUuid).then((response) => {
-            if (response.result) {
-                setWaitingRoomDto(response.result);
-                if (waitingRoomDto?.waitingPlayerUuid && waitingRoomDto?.joinedPlayerUuid) {
-                    navigate('/game-session');
-                } else {
-                    pollForGameStart();
-                }
-            }
+            if (response.result) setWaitingRoomDto(() => {return response.result});
         }).catch((e: AxiosError) => {
             let axiosResponse = e?.response as AxiosResponse<RestResponseError>;
             if (axiosResponse?.data) {
@@ -43,25 +38,35 @@ const WaitingRoom = () => {const navigate = useNavigate();
         });
     }, []);
 
+    React.useEffect(() => {
+        if (waitingRoomDto?.waitingPlayerUuid && waitingRoomDto?.joinedPlayerUuid) {
+            if (intervalId) clearInterval(intervalId);
+            sessionStorage.setItem('waitingRoomUuid', waitingRoomDto.uuid);
+            navigate('/game-session');
+        } else if (waitingRoomDto?.uuid && !intervalId) {
+            pollForGameStart();
+        }
+    }, [waitingRoomDto]);
+
     const pollForGameStart = () => {
-        const intervalId = setInterval(() => {
+        const id = setInterval(() => {
             if (waitingRoomDto?.uuid) {
-                waitingRoomService.get(waitingRoomDto?.uuid).then((response) => {
-                    setWaitingRoomDto(response.result);
-                    if (waitingRoomDto?.joinedPlayerUuid || isLeft) {
-                        clearInterval(intervalId);
-                        if (!isLeft) navigate('/game-session');
-                    }
+                waitingRoomService.get(waitingRoomDto.uuid).then((response) => {
+                    setWaitingRoomDto((prev) => {return response.result});
                 });
             }
         }, 5000);
+        setIntervalId(() => {return id});
+
+        return () => clearInterval(intervalId);
     };
 
     const handleLeaveRoom = () => {
-        waitingRoomService.leave(waitingRoomDto?.uuid!).then(() => {
-            setIsLeft(true);
-            navigate('/');
-        });
+        //TODO: process response
+        waitingRoomService.leave(waitingRoomDto?.uuid!);
+        setWaitingRoomDto((prev) => {return undefined});
+        clearInterval(intervalId);
+        navigate('/');
     };
 
     return (
@@ -71,7 +76,7 @@ const WaitingRoom = () => {const navigate = useNavigate();
                 <h1>Waiting Room</h1>
                 <div>#{waitingRoomDto?.uuid}</div>
                 <div>{waitingRoomDto?.state}</div>
-                <div>{new Date(waitingRoomDto?.createdDateTime!).toLocaleString()}</div>
+                <div>{new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '100px'}}>
                     {!errorMessage && (
                         <div className="d-flex align-items-center">
@@ -87,9 +92,10 @@ const WaitingRoom = () => {const navigate = useNavigate();
                 </div>
                 <div className="d-flex justify-content-left">
                     <button className="btn btn-primary"
-                            //TODO: add all styles to css files
-                            style={{ backgroundColor: '#343a40', borderColor: '#343a40', marginTop: '30px' }}
-                            onClick={handleLeaveRoom}>Leave Room</button>
+                        //TODO: add all styles to css files
+                            style={{backgroundColor: '#343a40', borderColor: '#343a40', marginTop: '30px'}}
+                            onClick={handleLeaveRoom}>Leave Room
+                    </button>
                 </div>
             </Body>
         </>
