@@ -3,7 +3,7 @@ version: '3'
 services:
   mancala-backend:
     build:
-      context: ./mancala-backend
+      context: vladcares/mancala-backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -11,7 +11,7 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
   mancala-frontend:
     build:
-      context: ./mancala-frontend
+      context: vladcares/mancala-frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
