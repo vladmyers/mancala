@@ -1,8 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {Container, Nav, Navbar} from 'react-bootstrap';
+import {Container, Nav, Navbar, Button} from 'react-bootstrap';
 
-const Header: React.FC = () => {
+type HeaderProps = {
+    gameSessionUuid?: string;
+    onLeaveGame?: () => void;
+};
+
+const Header: React.FC<HeaderProps> = ({gameSessionUuid, onLeaveGame}) => {
     return (
         <Navbar bg="dark" variant="dark" expand="lg" style={{paddingBottom: '20px'}}>
             <Container>
@@ -20,6 +25,11 @@ const Header: React.FC = () => {
                             About
                         </Nav.Link>
                     </Nav>
+                    {gameSessionUuid && (
+                        <Button variant="outline-danger" onClick={onLeaveGame} style={{marginLeft: '10px'}}>
+                            Leave game
+                        </Button>
+                    )}
                 </Navbar.Collapse>
             </Container>
         </Navbar>

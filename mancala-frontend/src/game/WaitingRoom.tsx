@@ -52,7 +52,7 @@ const WaitingRoom = () => {
         const id = setInterval(() => {
             if (waitingRoomDto?.uuid) {
                 waitingRoomService.get(waitingRoomDto.uuid).then((response) => {
-                    setWaitingRoomDto((prev) => {return response.result});
+                    setWaitingRoomDto(() => {return response.result});
                 });
             }
         }, 5000);
@@ -64,7 +64,7 @@ const WaitingRoom = () => {
     const handleLeaveRoom = () => {
         //TODO: process response
         waitingRoomService.leave(waitingRoomDto?.uuid!);
-        setWaitingRoomDto((prev) => {return undefined});
+        setWaitingRoomDto(() => {return undefined});
         clearInterval(intervalId);
         navigate('/');
     };

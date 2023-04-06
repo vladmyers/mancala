@@ -9,25 +9,25 @@ import {RestResponseError} from '../api/RestResponseError';
 import {RestResponse} from '../api/RestResponse';
 import {GameSessionDto} from "../dto/GameSessionDto";
 
-type GameSessionProps = {
-    waitingRoomUuid?: string;
-};
-
-const GameSession = ({waitingRoomUuid}: GameSessionProps) => {
+const GameSession = () => {
     const navigate = useNavigate();
     const gameSessionService: GameSessionService = ServiceLocator.get('gameSessionService')!;
 
     const [errorMessage, setErrorMessage] = React.useState('');
     const [gameSession, setGameSession] = React.useState<GameSessionDto>();
+    const [waitingRoomUuid, setWaitingRoomUuid] = React.useState<string>();
 
     React.useEffect(() => {
-        if (!waitingRoomUuid) {
+        const waitingRoomUuid = sessionStorage.getItem('waitingRoomUuid');
+        if (waitingRoomUuid) {
+            setWaitingRoomUuid(() => {return waitingRoomUuid});
+            sessionStorage.removeItem('waitingRoomUuid');
+        } else {
             navigate('/waiting-room');
-            return;
         }
 
         gameSessionService
-            .create(waitingRoomUuid)
+            .create(waitingRoomUuid!)
             .then((response: RestResponse<GameSessionDto>) => {
                 if (response.result) {
                     setGameSession(response.result);
@@ -43,16 +43,22 @@ const GameSession = ({waitingRoomUuid}: GameSessionProps) => {
             });
     }, []);
 
+    const handleLeaveGame = () => {
+        if (gameSession) {
+            gameSessionService.finish(gameSession?.uuid, gameSession).then(() => navigate("/"));
+        }
+    };
+
     return (
         <>
-            <Header/>
+            <Header gameSessionUuid={gameSession?.uuid} onLeaveGame={() => handleLeaveGame()}/>
             <Body>
                 <h1>Game Session</h1>
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '200px'}}>
                     {!errorMessage && gameSession && (
                         <div>
                             <div>Game session UUID: {gameSession.uuid}</div>
-                            <div>Created date: {new Date(gameSession.createdDateTime).toLocaleString()}</div>
+                            <div>Created date: {new Date(gameSession.createdDateTime).toLocaleString(navigator.language)}</div>
                         </div>
                     )}
                     {errorMessage && (

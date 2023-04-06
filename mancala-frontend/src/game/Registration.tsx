@@ -30,7 +30,7 @@ const Registration = () => {
                 sessionStorage.setItem('playerUuid', player.uuid);
                 sessionStorage.setItem('playerUsername', player.username);
 
-                setRegistrationResult(`Registration successful for ${response.result?.username}`);
+                setRegistrationResult(`Registration is successful for player '${response.result?.username}'. Redirecting...`);
 
                 setTimeout(() => navigate('/waiting-room'), 3000);
             })

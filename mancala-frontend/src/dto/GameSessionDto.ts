@@ -6,6 +6,7 @@ export interface GameSessionDto {
     playerOneTurn: boolean;
     board: BoardDto;
     winnerUuid?: string;
+    isLeft: boolean;
     waitingRoomUuid: string;
     createdDateTime: string;
     finishedDateTime?: string;
