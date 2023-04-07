@@ -36,8 +36,8 @@ public final class GameSession {
     private final boolean playerOneTurn = true;
 
     /** Mancala Board */
-    @NotNull
-    private final Board board;
+    /*@NotNull
+    private final Board board;*/
 
     /** UUID of Player that has won, if the game session is ended; otherwise - {@code null} */
     private final UUID winnerUuid;
@@ -45,7 +45,10 @@ public final class GameSession {
     /** Indicates if game was left */
     @NotNull
     @Builder.Default
-    private final boolean isLeft = false;
+    private final boolean left = false;
+
+    /** Indicates the player that left the game, if game was left; otherwise - {@code null} */
+    private final UUID playerLeftUuid;
 
     /** Waiting Room UUID this game session belongs to */
     @NotNull

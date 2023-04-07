@@ -1,6 +1,5 @@
 package com.bol.mancala.service;
 
-import com.bol.mancala.model.Board;
 import com.bol.mancala.model.GameSession;
 import com.bol.mancala.model.WaitingRoom;
 import com.bol.mancala.type.WaitingRoomState;
@@ -31,6 +30,9 @@ public class GameSessionService {
         //TODO: add to waitingRoom gameSessionUuid and get it here
         GameSession gameSessionExisting = uuidToGameSessionMap.values().stream()
                 .filter(gameSession -> waitingRoomUuid.equals(gameSession.getWaitingRoomUuid()))
+                //TODO: add Game Session State - Active, Finished, etc.
+                .filter(gameSession -> !gameSession.isLeft())
+                .filter(gameSession -> gameSession.getFinishedDateTime() == null)
                 .findFirst()
                 .orElse(null);
         if (gameSessionExisting != null) {
@@ -42,18 +44,18 @@ public class GameSessionService {
 
         UUID playerOneUuid = waitingRoom.getWaitingPlayerUuid();
         UUID playerTwoUuid = waitingRoom.getJoinedPlayerUuid();
-        Board board = gameInitService.initBoard(playerOneUuid, playerTwoUuid);
+        //Board board = gameInitService.initBoard(playerOneUuid, playerTwoUuid);
 
         GameSession gameSession = GameSession.builder()
                 .playerOneUuid(playerOneUuid)
                 .playerTwoUuid(playerTwoUuid)
-                .board(board)
+                //.board(board)
                 .waitingRoomUuid(waitingRoomUuid)
                 .build();
 
         uuidToGameSessionMap.put(gameSession.getUuid(), gameSession);
 
-        waitingRoomService.close(waitingRoomUuid, WaitingRoomState.GAME_SESSION_STARTED, waitingRoom.getJoinedPlayerUuid());
+        waitingRoomService.changeStateBy(waitingRoomUuid, WaitingRoomState.GAME_SESSION_STARTED, waitingRoom.getJoinedPlayerUuid());
 
         return gameSession;
     }
@@ -67,7 +69,7 @@ public class GameSessionService {
         return uuidToGameSessionMap.containsKey(uuid);
     }
 
-    public void finish(UUID uuid, GameSession gameSession) {
+    public void finishBy(UUID uuid, GameSession gameSession) {
         validateGameSessionExistsBy(uuid);
         validateGameSessionToFinish(uuid, gameSession);
 

@@ -16,9 +16,7 @@ const Registration = () => {
     // check if playerUuid is present in sessionStorage
     React.useEffect(() => {
         const playerUuid = sessionStorage.getItem('playerUuid');
-        if (playerUuid) {
-            navigate('/');
-        }
+        if (playerUuid) navigate('/');
     }, [navigate]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

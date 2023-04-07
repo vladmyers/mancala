@@ -30,7 +30,7 @@ public class GameSessionController implements GameSessionApi {
     }
 
     public RestResponse<Void> finish(UUID uuid, GameSession gameSession) {
-        gameSessionService.finish(uuid, gameSession);
+        gameSessionService.finishBy(uuid, gameSession);
         return success();
     }
 

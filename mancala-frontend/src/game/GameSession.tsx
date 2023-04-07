@@ -15,22 +15,33 @@ const GameSession = () => {
 
     const [errorMessage, setErrorMessage] = React.useState('');
     const [gameSession, setGameSession] = React.useState<GameSessionDto>();
-    const [waitingRoomUuid, setWaitingRoomUuid] = React.useState<string>();
+    const [intervalId, setIntervalId] = React.useState<NodeJS.Timer>();
 
     React.useEffect(() => {
+        const gameSessionUuid = sessionStorage.getItem('gameSessionUuid');
+        if (gameSessionUuid) {
+            gameSessionService.get(gameSessionUuid).then((response) => {
+                setGameSession(() => {
+                    return response.result
+                });
+            });
+            return;
+        }
+
         const waitingRoomUuid = sessionStorage.getItem('waitingRoomUuid');
-        if (waitingRoomUuid) {
-            setWaitingRoomUuid(() => {return waitingRoomUuid});
-            sessionStorage.removeItem('waitingRoomUuid');
-        } else {
+        if (!waitingRoomUuid) {
             navigate('/waiting-room');
+            return;
         }
 
         gameSessionService
-            .create(waitingRoomUuid!)
+            .create(waitingRoomUuid)
             .then((response: RestResponse<GameSessionDto>) => {
                 if (response.result) {
-                    setGameSession(response.result);
+                    setGameSession(() => {
+                        return response.result
+                    });
+                    sessionStorage.removeItem('waitingRoomUuid');
                 }
             })
             .catch((e: AxiosError) => {
@@ -43,9 +54,50 @@ const GameSession = () => {
             });
     }, []);
 
+    React.useEffect(() => {
+        if (gameSession?.uuid && !intervalId) {
+            pollForGameSessionState();
+        }
+    }, [gameSession]);
+
+    React.useEffect(() => {
+        if (gameSession?.left && gameSession.playerLeftUuid != sessionStorage.getItem('playerUuid')) {
+            clearInterval(intervalId);
+            alert('Another player has left the game');
+        }
+    }, [gameSession?.left]);
+
+    React.useEffect(() => {
+        if (gameSession?.uuid) sessionStorage.setItem('gameSessionUuid', gameSession.uuid);
+    }, [gameSession?.uuid]);
+
+    const pollForGameSessionState = () => {
+        const id = setInterval(() => {
+            if (gameSession?.uuid) {
+                gameSessionService.get(gameSession.uuid).then((response) => {
+                    setGameSession(() => {
+                        return response.result
+                    });
+                });
+            }
+        }, 1000);
+        setIntervalId(() => {
+            return id
+        });
+
+        return () => clearInterval(intervalId);
+    };
+
     const handleLeaveGame = () => {
         if (gameSession) {
-            gameSessionService.finish(gameSession?.uuid, gameSession).then(() => navigate("/"));
+            gameSession.left = true
+            gameSession.playerLeftUuid = sessionStorage.getItem('playerUuid')!;
+            gameSessionService.finish(gameSession?.uuid, gameSession);
+            setGameSession(() => {
+                return undefined
+            });
+            clearInterval(intervalId);
+            navigate("/");
         }
     };
 
