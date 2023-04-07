@@ -1,6 +1,7 @@
 import {deleteData, getResource, postData} from "../util/axiosApi";
 import {RestResponse} from "../api/RestResponse";
 import {WaitingRoomDto} from "../dto/WaitingRoomDto";
+import {WaitingRoomState} from "../dto/type/WaitingRoomState";
 
 /**
  * Waiting Room service
@@ -18,9 +19,7 @@ export default class WaitingRoomService {
     }
 
     leave(uuid: string): Promise<RestResponse<void>> {
-        //TODO: use constant WaitingRoomState.LEFT_BY_PLAYER
-        let state = "LEFT_BY_PLAYER";
-        return deleteData(`${WaitingRoomService.URI_V1}/${uuid}/${state}`);
+        return deleteData(`${WaitingRoomService.URI_V1}/${uuid}/${WaitingRoomState.LEFT_BY_PLAYER.name}`);
     }
 
 }

@@ -3,8 +3,10 @@ package com.bol.mancala.service;
 import com.bol.mancala.model.WaitingRoom;
 import com.bol.mancala.type.WaitingRoomState;
 import com.bol.mancala.util.LocalDateTimeUtil;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import static java.lang.String.format;
 /**
  * Waiting Room service
  */
+@Validated
 @Service
 @AllArgsConstructor
 public class WaitingRoomService {
@@ -34,7 +37,7 @@ public class WaitingRoomService {
     private final Map<UUID, WaitingRoom> uuidToWaitingRoomOpenedMap = new ConcurrentHashMap<>();
 
     /** Creates Waiting Room with the specified player and returns it */
-    public WaitingRoom create(UUID playerUuid) {
+    public WaitingRoom createFor(@NotNull UUID playerUuid) {
         validatePlayerBy(playerUuid);
 
         WaitingRoom waitingRoom = WaitingRoom.builder().waitingPlayerUuid(playerUuid).build();
@@ -44,7 +47,7 @@ public class WaitingRoomService {
     }
 
     /** Joins the earliest waiting room or creates a new one for the specified player and returns it */
-    public WaitingRoom joinOrCreate(UUID playerUuid) {
+    public WaitingRoom joinOrCreateFor(@NotNull UUID playerUuid) {
         validatePlayerExistsBy(playerUuid);
 
         WaitingRoom waitingRoomExistingWithPlayer = getExistingWaitingRoomWithPlayer(playerUuid);
@@ -57,17 +60,17 @@ public class WaitingRoomService {
                 .filter(waitingRoom -> WaitingRoomState.OPENED.equals(waitingRoom.getState()))
                 .min(Comparator.comparing(WaitingRoom::getCreatedDateTime));
 
-        return waitingRoomExistingOp.map(waitingRoom -> join(playerUuid, waitingRoom))
-                .orElseGet(() -> create(playerUuid));
+        return waitingRoomExistingOp.map(waitingRoom -> join(waitingRoom, playerUuid))
+                .orElseGet(() -> createFor(playerUuid));
     }
 
     /** Returns {@code true} if Waiting Room with the specified uuid exists; otherwise - {@code false} */
-    public boolean existsBy(UUID uuid) {
+    public boolean existsBy(@NotNull UUID uuid) {
         return uuidToWaitingRoomOpenedMap.containsKey(uuid);
     }
 
     /** Returns Waiting Room by its uuid */
-    public WaitingRoom getBy(UUID uuid) {
+    public WaitingRoom getBy(@NotNull UUID uuid) {
         WaitingRoom waitingRoom = uuidToWaitingRoomOpenedMap.get(uuid);
         if (waitingRoom == null) {
             throw new IllegalArgumentException(format(ERROR_WAITING_ROOM_NOT_FOUND, uuid));
@@ -75,8 +78,8 @@ public class WaitingRoomService {
         return waitingRoom;
     }
 
-    /** Closes Waiting Room by its uuid */
-    public void close(UUID uuid, WaitingRoomState state, UUID joinedPlayerUuid) {
+    /** Changes Waiting Room state by its uuid */
+    public void changeStateBy(@NotNull UUID uuid, @NotNull WaitingRoomState state, @NotNull UUID joinedPlayerUuid) {
         //TODO: refactor this method and add validateStateForWaitingRoom()
         // as long as for 'game has started' state joinedPlayerUuid should exist in waitingRoom
         validatePlayerExistsBy(joinedPlayerUuid);
@@ -92,12 +95,12 @@ public class WaitingRoomService {
         uuidToWaitingRoomOpenedMap.replace(waitingRoomClosed.getUuid(), waitingRoomClosed);
     }
 
-    /** Closes Waiting Room by its uuid without the joined player */
-    public void close(UUID uuid, WaitingRoomState state) {
+    /** Changes Waiting Room state by its uuid without the joined player */
+    public void changeStateBy(@NotNull UUID uuid, @NotNull WaitingRoomState state) {
         validateWaitingRoomExistsBy(uuid);
         validateStateWithoutJoinedPlayer(state);
 
-        close(uuid, state, null);
+        changeStateBy(uuid, state, null);
     }
 
     /** Returns all Waiting Rooms */
@@ -105,15 +108,14 @@ public class WaitingRoomService {
         return new HashSet<>(uuidToWaitingRoomOpenedMap.values());
     }
 
-    private static void validateStateWithoutJoinedPlayer(WaitingRoomState state) {
+    private static void validateStateWithoutJoinedPlayer(@NotNull WaitingRoomState state) {
         if (WaitingRoomState.GAME_SESSION_STARTED == state) {
             throw new IllegalArgumentException("joinedPlayerUuid is required");
         }
     }
 
-    private WaitingRoom join(UUID playerUuid, WaitingRoom waitingRoom) {
+    private WaitingRoom join(@NotNull WaitingRoom waitingRoom, @NotNull UUID playerUuid) {
         WaitingRoom waitingRoomJoined = waitingRoom.toBuilder()
-                //.uuid(waitingRoom.getUuid())
                 .joinedPlayerUuid(playerUuid)
                 .state(WaitingRoomState.WAITING_FOR_GAME_SESSION)
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
@@ -124,34 +126,35 @@ public class WaitingRoomService {
         return waitingRoomJoined;
     }
 
-    private WaitingRoom getExistingWaitingRoomWithPlayer(UUID playerUuid) {
+    private WaitingRoom getExistingWaitingRoomWithPlayer(@NotNull UUID playerUuid) {
         return uuidToWaitingRoomOpenedMap.values().stream()
-                .filter(waitingRoom -> waitingRoom.getWaitingPlayerUuid().equals(playerUuid))
+                .filter(waitingRoom -> playerUuid.equals(waitingRoom.getWaitingPlayerUuid()))
+                .filter(waitingRoom -> WaitingRoomState.OPENED.equals(waitingRoom.getState()))
                 .findFirst()
                 .orElse(null);
     }
 
-    private void validateWaitingRoomExistsBy(UUID waitingRoomUuid) {
+    private void validateWaitingRoomExistsBy(@NotNull UUID waitingRoomUuid) {
         if (!uuidToWaitingRoomOpenedMap.containsKey(waitingRoomUuid)) {
             throw new IllegalArgumentException(format(ERROR_WAITING_ROOM_NOT_FOUND, waitingRoomUuid));
         }
     }
 
-    private void validatePlayerExistsBy(UUID playerUuid) {
+    private void validatePlayerExistsBy(@NotNull UUID playerUuid) {
         if (playerUuid != null && !playerService.existBy(playerUuid)) {
             throw new IllegalArgumentException(format(ERROR_PLAYER_NOT_FOUND, playerUuid));
         }
     }
 
-    //TODO: add Player in Waiting Room validator class
-    private void validatePlayerBy(UUID playerUuid) {
+    private void validatePlayerBy(@NotNull UUID playerUuid) {
         validatePlayerExistsBy(playerUuid);
-        validatePlayerIsNotInAnyWaitingRoom(playerUuid);
+        validatePlayerIsNotInAnyOpenedWaitingRoom(playerUuid);
     }
 
-    private void validatePlayerIsNotInAnyWaitingRoom(UUID playerUuid) {
+    private void validatePlayerIsNotInAnyOpenedWaitingRoom(@NotNull UUID playerUuid) {
         boolean playerIsAlreadyInWaitingRoom = uuidToWaitingRoomOpenedMap.values().stream()
-                .anyMatch(waitingRoom -> waitingRoom.getWaitingPlayerUuid().equals(playerUuid));
+                .anyMatch(waitingRoom -> waitingRoom.getWaitingPlayerUuid().equals(playerUuid)
+                        && WaitingRoomState.OPENED.equals(waitingRoom.getState()));
         if (playerIsAlreadyInWaitingRoom) {
             throw new IllegalArgumentException(format(ERROR_PLAYER_IS_ALREADY_IN_WAITING_ROOM, playerUuid));
         }

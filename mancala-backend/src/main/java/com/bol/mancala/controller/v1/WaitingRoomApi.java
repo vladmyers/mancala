@@ -33,7 +33,7 @@ public interface WaitingRoomApi {
     })
     @PostMapping(value = "/{playerUuid}", produces = APPLICATION_JSON_VALUE)
     RestResponse<WaitingRoom> join(@Parameter(description = "Player uuid that joins waiting room", required = true)
-                            @PathVariable UUID playerUuid);
+                                   @PathVariable UUID playerUuid);
 
     @Operation(summary = "Returns Waiting Room by its uuid")
     @ApiResponses(value = {
@@ -42,7 +42,7 @@ public interface WaitingRoomApi {
     })
     @GetMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
     RestResponse<WaitingRoom> get(@Parameter(description = "Waiting Room uuid", required = true)
-                            @PathVariable UUID uuid);
+                                  @PathVariable UUID uuid);
 
     @Operation(summary = "Closes Waiting Room by its uuid")
     @ApiResponses(value = {
@@ -50,10 +50,10 @@ public interface WaitingRoomApi {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @DeleteMapping(value = "/{uuid}/{waitingRoomState}", produces = APPLICATION_JSON_VALUE)
-    RestResponse<Void> close(@Parameter(description = "Waiting Room uuid", required = true)
-                            @PathVariable UUID uuid,
-                                    @Parameter(description = "Waiting Room state", required = true)
-                                    @PathVariable WaitingRoomState waitingRoomState);
+    RestResponse<Void> changeState(@Parameter(description = "Waiting Room uuid", required = true)
+                                   @PathVariable UUID uuid,
+                                   @Parameter(description = "Waiting Room state", required = true)
+                                   @PathVariable WaitingRoomState waitingRoomState);
 
     @Operation(summary = "Returns all Waiting Rooms")
     @ApiResponses(value = {

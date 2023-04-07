@@ -9,6 +9,7 @@ import {WaitingRoomDto} from "../dto/WaitingRoomDto";
 
 import Header from '../component/Header';
 import Body from '../component/Body';
+import {WaitingRoomState} from "../dto/type/WaitingRoomState";
 
 const WaitingRoom = () => {
     const navigate = useNavigate();
@@ -55,7 +56,7 @@ const WaitingRoom = () => {
                     setWaitingRoomDto(() => {return response.result});
                 });
             }
-        }, 5000);
+        }, 1000);
         setIntervalId(() => {return id});
 
         return () => clearInterval(intervalId);
@@ -71,12 +72,12 @@ const WaitingRoom = () => {
 
     return (
         <>
-            <Header/>
+            <Header waitingRoomUuid={waitingRoomDto?.uuid} onLeaveRoom={() => handleLeaveRoom()}/>
             <Body>
                 <h1>Waiting Room</h1>
                 <div>#{waitingRoomDto?.uuid}</div>
-                <div>{waitingRoomDto?.state}</div>
-                <div>{new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
+                <div>State: {WaitingRoomState.getByName(waitingRoomDto?.state)?.displayValue}</div>
+                <div>Created: {new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '100px'}}>
                     {!errorMessage && (
                         <div className="d-flex align-items-center">
