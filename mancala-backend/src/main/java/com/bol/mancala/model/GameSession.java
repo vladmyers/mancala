@@ -35,10 +35,6 @@ public final class GameSession {
     @Builder.Default
     private final boolean playerOneTurn = true;
 
-    /** Mancala Board */
-    /*@NotNull
-    private final Board board;*/
-
     /** UUID of Player that has won, if the game session is ended; otherwise - {@code null} */
     private final UUID winnerUuid;
 

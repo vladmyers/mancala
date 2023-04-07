@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameSessionService {
 
     private final WaitingRoomService waitingRoomService;
-    private final GameInitService gameInitService;
 
     private final Map<UUID, GameSession> uuidToGameSessionMap = new ConcurrentHashMap<>();
 
@@ -44,12 +43,10 @@ public class GameSessionService {
 
         UUID playerOneUuid = waitingRoom.getWaitingPlayerUuid();
         UUID playerTwoUuid = waitingRoom.getJoinedPlayerUuid();
-        //Board board = gameInitService.initBoard(playerOneUuid, playerTwoUuid);
 
         GameSession gameSession = GameSession.builder()
                 .playerOneUuid(playerOneUuid)
                 .playerTwoUuid(playerTwoUuid)
-                //.board(board)
                 .waitingRoomUuid(waitingRoomUuid)
                 .build();
 
