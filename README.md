@@ -10,6 +10,7 @@
     * [Build all modules]
     * [Build modules separately]
   * [Usage]
+* [OpenAPI Specification]
 * [Tech stack]
   * [Common - across all modules]
   * [mancala-frontend module]
@@ -72,6 +73,10 @@ Clone the repository: `git clone https://github.com/vladmyers/mancala.git`
 4. Start the frontend: `npm start`
 5. Navigate to http://localhost:3000 in your web browser
 
+# OpenAPI Specification
+
+To view the API documentation after starting the backend server go to http://localhost:8080/swagger-ui.html
+
 # Tech stack
 
 ## Common - across all modules
@@ -82,15 +87,15 @@ Clone the repository: `git clone https://github.com/vladmyers/mancala.git`
 | Docker Compose | Tool for defining and running multi-container Docker applications  |
 
 ## mancala-backend module
-| Tech          | Description                                                        |
-|---------------|--------------------------------------------------------------------|
-| Java 17       | Java latest LTS version                                            |
-| Maven         | Build tool and dependency management                               |
-| Spring Boot 3 | Spring-based application platform                                  |
-| Lombok        | Boilerplate code generator                                         |
-| JUnit5        | Java testing framework                                             |
-| Checkstyle    | Static analysis tool to check for coding standards and conventions |
-| Swagger       | Designing, building, and documenting RESTful APIs toolset          |
+| Tech              | Description                                                        |
+|-------------------|--------------------------------------------------------------------|
+| Java 17           | Java latest LTS version                                            |
+| Maven             | Build tool and dependency management                               |
+| Spring Boot 3     | Spring-based application platform                                  |
+| Lombok            | Boilerplate code generator                                         |
+| JUnit5            | Java testing framework                                             |
+| Checkstyle        | Static analysis tool to check for coding standards and conventions |
+| OpenAPI (Swagger) | Designing, building, and documenting RESTful APIs toolset          |
 
 ## mancala-frontend module
 | Tech          | Description                                                  |
@@ -132,6 +137,7 @@ This project is licensed under the Apache License 2.0. See the [LICENSE] file fo
 [Build modules separately]: #build-modules-separately
 [Easy Way]: #easy-way
 [Usage]: #usage
+[OpenAPI Specification]: #openapi-specification
 [Tech stack]: #tech-stack
 [Common - across all modules]: #common---across-all-modules
 [mancala-frontend module]: #mancala-frontend-module
