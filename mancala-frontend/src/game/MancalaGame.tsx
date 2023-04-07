@@ -92,19 +92,13 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
         return gameState.pits[pitIndex] === 0;
     };
 
-    //TODO: fix
     const isGameOver = (): boolean => {
-        const player1Empty = gameState.pits.slice(0, PLAYER1_PIT_INDEX).every(isPitEmpty) && !isPitEmpty(PLAYER1_PIT_INDEX);
-        const player2Empty = gameState.pits.slice(PLAYER1_PIT_INDEX + 1, PLAYER2_PIT_INDEX).every(isPitEmpty) && !isPitEmpty(PLAYER2_PIT_INDEX);
+        const player1Empty = gameState.pits.slice(0, PLAYER1_PIT_INDEX).every(stones => stones === 0) && !isPitEmpty(PLAYER1_PIT_INDEX);
+        const player2Empty = gameState.pits.slice(PLAYER1_PIT_INDEX + 1, PLAYER2_PIT_INDEX).every(stones => stones === 0) && !isPitEmpty(PLAYER2_PIT_INDEX);
         return player1Empty || player2Empty;
     };
 
     const handlePitClick = (pitIndex: number): void => {
-        console.debug("handlePitClick: " + pitIndex);
-
-        //Do nothing if the game is over
-        if (gameOver) return;
-
         //Check if the pit belongs to the current player
         if ((gameState.player1Turn && isPlayer2Pit(pitIndex)) ||
             (!gameState.player1Turn && isPlayer1Pit(pitIndex))) {
@@ -165,7 +159,6 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
         setGameState(() => {
             return newGameState
         });
-        console.debug("newGameState.pits: " + newGameState.pits);
 
         //Check if the game is over
         if (isGameOver()) {
@@ -209,10 +202,9 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
                                     {gameState.pits[PLAYER2_PIT_INDEX - i - 1]}
                                 </div>
                                 <div className="pit-label">Pit {NUM_PITS_PER_PLAYER - i}</div>
-                                <Button
-                                    onClick={() => handlePitClick(PLAYER2_PIT_INDEX - i - 1)}
-                                    className="btn btn-primary"
-                                >
+                                <Button onClick={() => handlePitClick(PLAYER2_PIT_INDEX - i - 1)}
+                                        disabled={gameState.player1Turn || gameState.pits[PLAYER2_PIT_INDEX - i - 1] === 0 || gameOver}
+                                        className="btn btn-primary">
                                     Select
                                 </Button>
                             </div>
@@ -229,7 +221,9 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
                                     {gameState.pits[i]}
                                 </div>
                                 <div className="pit-label">Pit {i + 1}</div>
-                                <Button onClick={() => handlePitClick(i)} className="btn btn-primary">
+                                <Button onClick={() => handlePitClick(i)}
+                                        disabled={!gameState.player1Turn || gameState.pits[i] === 0 || gameOver}
+                                        className="btn btn-primary">
                                     Select
                                 </Button>
                             </div>
