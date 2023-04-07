@@ -16,12 +16,12 @@ const Header: React.FC<HeaderProps> = ({
                                            onLeaveGame
                                        }) => {
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" style={{paddingBottom: '20px'}}>
+        <Navbar bg="dark" variant="dark" expand="lg" style={{paddingBottom: '10px'}}>
             <Container>
                 <Navbar.Brand>Mancala Game</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
+                    <Nav className="me-auto">
                         <Nav.Link as={Link} to="/">
                             Home
                         </Nav.Link>
@@ -32,16 +32,18 @@ const Header: React.FC<HeaderProps> = ({
                             About
                         </Nav.Link>
                     </Nav>
-                    {waitingRoomUuid && (
-                        <Button variant="outline-danger" onClick={onLeaveRoom} style={{marginLeft: '10px'}}>
-                            Leave room
-                        </Button>
-                    )}
-                    {gameSessionUuid && (
-                        <Button variant="outline-danger" onClick={onLeaveGame} style={{marginLeft: '10px'}}>
-                            Leave game
-                        </Button>
-                    )}
+                    <div className="d-flex">
+                        {waitingRoomUuid && (
+                            <Button variant="outline-danger" onClick={onLeaveRoom}>
+                                Leave room
+                            </Button>
+                        )}
+                        {gameSessionUuid && (
+                            <Button variant="outline-danger" onClick={onLeaveGame}>
+                                Leave game
+                            </Button>
+                        )}
+                    </div>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
