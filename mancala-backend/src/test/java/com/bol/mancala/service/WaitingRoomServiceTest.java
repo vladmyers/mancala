@@ -120,7 +120,7 @@ class WaitingRoomServiceTest {
 
         WaitingRoom closedWaitingRoom = waitingRoomService.getBy(waitingRoomUuid2);
 
-        assertEquals(WaitingRoomState.LEFT_BY_PLAYER, closedWaitingRoom.getState());
+        assertEquals(WaitingRoomState.WAITING_FOR_GAME_SESSION, closedWaitingRoom.getState());
         assertNotNull(closedWaitingRoom.getFinishedDateTime());
         assertThat(closedWaitingRoom.getFinishedDateTime()).isCloseToUtcNow(within(1, ChronoUnit.SECONDS));
     }
