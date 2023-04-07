@@ -6,10 +6,10 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {RestResponseError} from "../api/RestResponseError";
 import {RestResponse} from "../api/RestResponse";
 import {WaitingRoomDto} from "../dto/WaitingRoomDto";
+import {WaitingRoomState} from "../dto/type/WaitingRoomState";
 
 import Header from '../component/Header';
 import Body from '../component/Body';
-import {WaitingRoomState} from "../dto/type/WaitingRoomState";
 
 const WaitingRoom = () => {
     const navigate = useNavigate();
