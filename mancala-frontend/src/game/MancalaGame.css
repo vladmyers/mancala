@@ -108,3 +108,13 @@
     font-weight: bold;
     color: #555;
 }
+
+.btn:disabled {
+    background-color: #59595e;
+    border: #59595e;
+}
+
+.btn:hover {
+    background-color: #424449;
+    border: #59595e;
+}

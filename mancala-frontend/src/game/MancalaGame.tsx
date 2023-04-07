@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {Alert, Button, Row} from 'react-bootstrap';
-import './MancalaGame.css';
 import {GameSessionDto} from "../dto/GameSessionDto";
+
+import './MancalaGame.css';
+
 
 type GameState = {
     pits: number[];
