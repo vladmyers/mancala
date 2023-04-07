@@ -103,7 +103,7 @@ public class WaitingRoomService {
                 .finishedDateTime(LocalDateTimeUtil.nowUtc())
                 .build();
 
-        uuidToWaitingRoomOpenedMap.put(waitingRoomJoined.getUuid(), waitingRoomJoined);
+        uuidToWaitingRoomOpenedMap.replace(waitingRoom.getUuid(), waitingRoomJoined);
 
         return waitingRoomJoined;
     }
