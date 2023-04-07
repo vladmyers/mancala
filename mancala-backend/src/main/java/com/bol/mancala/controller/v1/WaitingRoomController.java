@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static com.bol.mancala.exception.RestResponse.success;
@@ -23,16 +24,20 @@ public class WaitingRoomController implements WaitingRoomApi {
     private final WaitingRoomService waitingRoomService;
 
     public RestResponse<WaitingRoom> join(UUID playerUuid) {
-        return success(waitingRoomService.joinOrCreate(playerUuid));
+        return success(waitingRoomService.joinOrCreateFor(playerUuid));
     }
 
     public RestResponse<WaitingRoom> get(UUID uuid) {
         return success(waitingRoomService.getBy(uuid));
     }
 
-    public RestResponse<Void> close(UUID uuid, WaitingRoomState waitingRoomState) {
-        waitingRoomService.close(uuid, waitingRoomState);
+    public RestResponse<Void> changeState(UUID uuid, WaitingRoomState waitingRoomState) {
+        waitingRoomService.changeStateBy(uuid, waitingRoomState);
         return success();
+    }
+
+    public RestResponse<Set<WaitingRoom>> getAll() {
+        return success(waitingRoomService.getAll());
     }
 
 }

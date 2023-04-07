@@ -6,6 +6,7 @@ import {AxiosError, AxiosResponse} from 'axios';
 import {RestResponseError} from "../api/RestResponseError";
 import {RestResponse} from "../api/RestResponse";
 import {WaitingRoomDto} from "../dto/WaitingRoomDto";
+import {WaitingRoomState} from "../dto/type/WaitingRoomState";
 
 import Header from '../component/Header';
 import Body from '../component/Body';
@@ -52,10 +53,10 @@ const WaitingRoom = () => {
         const id = setInterval(() => {
             if (waitingRoomDto?.uuid) {
                 waitingRoomService.get(waitingRoomDto.uuid).then((response) => {
-                    setWaitingRoomDto((prev) => {return response.result});
+                    setWaitingRoomDto(() => {return response.result});
                 });
             }
-        }, 5000);
+        }, 1000);
         setIntervalId(() => {return id});
 
         return () => clearInterval(intervalId);
@@ -64,19 +65,19 @@ const WaitingRoom = () => {
     const handleLeaveRoom = () => {
         //TODO: process response
         waitingRoomService.leave(waitingRoomDto?.uuid!);
-        setWaitingRoomDto((prev) => {return undefined});
+        setWaitingRoomDto(() => {return undefined});
         clearInterval(intervalId);
         navigate('/');
     };
 
     return (
         <>
-            <Header/>
+            <Header waitingRoomUuid={waitingRoomDto?.uuid} onLeaveRoom={() => handleLeaveRoom()}/>
             <Body>
                 <h1>Waiting Room</h1>
                 <div>#{waitingRoomDto?.uuid}</div>
-                <div>{waitingRoomDto?.state}</div>
-                <div>{new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
+                <div>State: {WaitingRoomState.getByName(waitingRoomDto?.state)?.displayValue}</div>
+                <div>Created: {new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '100px'}}>
                     {!errorMessage && (
                         <div className="d-flex align-items-center">

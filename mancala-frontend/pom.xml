@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.bol</groupId>
         <artifactId>mancala</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
 
     <artifactId>mancala-frontend</artifactId>
@@ -16,6 +16,7 @@
         <node.version>v18.15.0</node.version>
         <npm.version>9.5.0</npm.version>
 
+        <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
     </properties>
 

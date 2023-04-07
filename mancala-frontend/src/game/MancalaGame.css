@@ -1,0 +1,120 @@
+.mancala-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mancala-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.player1-mancala, .player2-mancala {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    width: 120px;
+    margin: 5px;
+    background-color: white;
+}
+
+.player1-mancala h5, .player2-mancala h5 {
+    margin: 0;
+}
+
+.mancala-pit {
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.mancala-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.pit-row {
+    display: flex;
+    justify-content: center;
+}
+
+.pit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    width: 120px;
+    margin: 5px;
+    background-color: white;
+}
+
+.pit-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.spacer {
+    width: 50px;
+}
+
+.btn-primary {
+    background-color: #343a40;
+    border-color: #343a40;
+}
+
+.btn-primary:hover {
+    background-color: #23272b;
+    border-color: #23272b;
+}
+
+.btn-primary:active {
+    background-color: #1d2124;
+    border-color: #1d2124;
+}
+
+.btn-primary:focus {
+    box-shadow: none;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+    border-color: #e2e6ea;
+}
+
+.btn-light:active {
+    background-color: #d4d8db;
+    border-color: #d4d8db;
+}
+
+.btn-light:focus {
+    box-shadow: none;
+}
+
+.text-center {
+    font-size: 24px;
+    font-weight: bold;
+    color: #555;
+}
+
+.btn:disabled {
+    background-color: #59595e;
+    border: #59595e;
+}
+
+.btn:hover {
+    background-color: #424449;
+    border: #59595e;
+}

@@ -4,8 +4,9 @@ export interface GameSessionDto {
     playerOneUuid: string;
     playerTwoUuid: string;
     playerOneTurn: boolean;
-    board: BoardDto;
     winnerUuid?: string;
+    left: boolean;
+    playerLeftUuid: string;
     waitingRoomUuid: string;
     createdDateTime: string;
     finishedDateTime?: string;

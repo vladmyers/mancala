@@ -16,9 +16,7 @@ const Registration = () => {
     // check if playerUuid is present in sessionStorage
     React.useEffect(() => {
         const playerUuid = sessionStorage.getItem('playerUuid');
-        if (playerUuid) {
-            navigate('/');
-        }
+        if (playerUuid) navigate('/');
     }, [navigate]);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -30,7 +28,7 @@ const Registration = () => {
                 sessionStorage.setItem('playerUuid', player.uuid);
                 sessionStorage.setItem('playerUsername', player.username);
 
-                setRegistrationResult(`Registration successful for ${response.result?.username}`);
+                setRegistrationResult(`Registration is successful for player '${response.result?.username}'. Redirecting...`);
 
                 setTimeout(() => navigate('/waiting-room'), 3000);
             })
