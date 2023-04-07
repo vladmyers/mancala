@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static com.bol.mancala.exception.RestResponse.success;
@@ -34,10 +33,6 @@ public class WaitingRoomController implements WaitingRoomApi {
     public RestResponse<Void> close(UUID uuid, WaitingRoomState waitingRoomState) {
         waitingRoomService.close(uuid, waitingRoomState);
         return success();
-    }
-
-    public RestResponse<Set<WaitingRoom>> getAll() {
-        return success(waitingRoomService.getAll());
     }
 
 }
