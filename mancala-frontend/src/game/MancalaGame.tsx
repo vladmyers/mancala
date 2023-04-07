@@ -37,7 +37,7 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
     const [winnerMessage, setWinnerMessage] = useState<string | null>(null);
 
     const getOpponentPitIndex = (pitIndex: number): number => {
-        return NUM_TOTAL_PITS - 2 - pitIndex;
+        return NUM_TOTAL_PITS - 1 - pitIndex;
     };
 
     const isPlayer1Pit = (pitIndex: number): boolean => {
@@ -130,33 +130,25 @@ const MancalaGame: React.FC<MancalaBoardProps> = ({
             if (currentPitIndex >= NUM_TOTAL_PITS) {
                 currentPitIndex = 0;
             }
-            console.debug("currentPitIndex: " + currentPitIndex);
 
             // Skip the opponent's mancala
             if ((gameState.player1Turn && isPlayer2Mancala(currentPitIndex)) ||
                 (!gameState.player1Turn && isPlayer1Mancala(currentPitIndex))) {
                 continue;
             }
-            console.debug("Skip the opponent's mancala, currentPitIndex: " + currentPitIndex);
 
             newGameState.pits[currentPitIndex]++;
-            console.debug("newGameState.pits[currentPitIndex]: " + newGameState.pits[currentPitIndex]);
             stonesInHand--;
-            console.debug("stonesInHand: " + stonesInHand);
 
-            //TODO: verify
             //If the last stone landed in an empty pit owned by the current player,
             //capture the stones from the opposite pit and add them to the player's mancala
-            if (stonesInHand === 0 && isPlayer1Pit(currentPitIndex) && newGameState.pits[currentPitIndex] === 1) {
-                let opponentPitIndex = getOpponentPitIndex(currentPitIndex);
-                let capturedStones = newGameState.pits[opponentPitIndex];
+            if (stonesInHand === 0 && newGameState.pits[currentPitIndex] === 1) {
+                const opponentPitIndex = getOpponentPitIndex(currentPitIndex);
+                const capturedStones = newGameState.pits[opponentPitIndex];
 
                 newGameState.pits[opponentPitIndex] = 0;
+                newGameState.pits[currentPitIndex] = 0;
                 newGameState.pits[getMancalaIndex(gameState.player1Turn)] += capturedStones + 1;
-
-                console.debug("opponentPitIndex: " + opponentPitIndex);
-                console.debug("capturedStones: " + stonesInHand);
-                console.debug("newGameState.pits[getMancalaIndex(gameState.player1Turn)]: " + newGameState.pits[getMancalaIndex(gameState.player1Turn)]);
             }
         }
 
