@@ -1,0 +1,12 @@
+.beta-sticker {
+    background-color: #0d7e96;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 10px;
+    border-radius: 10px;
+    position: absolute;
+    top: 0;
+    left: 250px;
+    z-index: 9999;
+}

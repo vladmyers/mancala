@@ -2,12 +2,16 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ServiceLocator} from '../service/ServiceLocator';
 import GameSessionService from '../service/GameSessionService';
-import Header from '../component/Header';
-import Body from '../component/Body';
 import {AxiosError, AxiosResponse} from 'axios';
 import {RestResponseError} from '../api/RestResponseError';
 import {RestResponse} from '../api/RestResponse';
 import {GameSessionDto} from "../dto/GameSessionDto";
+
+import Header from '../component/Header';
+import Body from '../component/Body';
+import MancalaGame from "./MancalaGame";
+
+import "./GameSession.css"
 
 const GameSession = () => {
     const navigate = useNavigate();
@@ -105,7 +109,15 @@ const GameSession = () => {
         <>
             <Header gameSessionUuid={gameSession?.uuid} onLeaveGame={() => handleLeaveGame()}/>
             <Body>
-                <h1>Game Session</h1>
+                <div>
+                    <div className="col" style={{position: 'relative'}}>
+                        <h1>Game Session</h1>
+                        <div className="beta-sticker">Beta</div>
+                    </div>
+                    <div>This is a Beta version, and currently, the game session is not being synchronized between connected players.
+                        Please take turns one by one on the same open page for now</div>
+                </div>
+                <MancalaGame gameSession={gameSession}/>
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '200px'}}>
                     {!errorMessage && gameSession && (
                         <div>
