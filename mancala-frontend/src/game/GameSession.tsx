@@ -67,6 +67,7 @@ const GameSession = () => {
     React.useEffect(() => {
         if (gameSession?.left && gameSession.playerLeftUuid != sessionStorage.getItem('playerUuid')) {
             clearInterval(intervalId);
+            sessionStorage.removeItem('gameSessionUuid');
             alert('Another player has left the game');
         }
     }, [gameSession?.left]);
@@ -101,6 +102,7 @@ const GameSession = () => {
                 return undefined
             });
             clearInterval(intervalId);
+            sessionStorage.removeItem('gameSessionUuid');
             navigate("/");
         }
     };
