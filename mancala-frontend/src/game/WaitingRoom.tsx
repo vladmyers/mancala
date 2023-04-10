@@ -15,13 +15,14 @@ const WaitingRoom = () => {
     const navigate = useNavigate();
     const waitingRoomService: WaitingRoomService = ServiceLocator.get('waitingRoomService')!;
 
+    const playerUuid = sessionStorage.getItem('playerUuid');
+    const playerUsername = sessionStorage.getItem('playerUsername');
+
     const [errorMessage, setErrorMessage] = React.useState('');
     const [waitingRoomDto, setWaitingRoomDto] = React.useState<WaitingRoomDto>();
     const [intervalId, setIntervalId] = React.useState<NodeJS.Timer>();
 
     React.useEffect(() => {
-        const playerUuid = sessionStorage.getItem('playerUuid');
-        const playerUsername = sessionStorage.getItem('playerUsername');
         if (!playerUuid || !playerUsername) {
             navigate('/register');
             return;
@@ -77,7 +78,10 @@ const WaitingRoom = () => {
                 <h1>Waiting Room</h1>
                 <div>#{waitingRoomDto?.uuid}</div>
                 <div>State: {WaitingRoomState.getByName(waitingRoomDto?.state)?.displayValue}</div>
-                <div>Created: {new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
+                <div>Created date and time: {new Date(waitingRoomDto?.createdDateTime!).toLocaleString(navigator.language)}</div>
+                <div>Player: {playerUsername}</div>
+                <div>Player UUID: {playerUuid}</div>
+
                 <div className="d-flex justify-content-left align-items-center" style={{minHeight: '100px'}}>
                     {!errorMessage && (
                         <div className="d-flex align-items-center">

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static com.bol.mancala.exception.RestResponse.success;
 
@@ -27,6 +28,10 @@ public class PlayerController implements PlayerApi {
 
     public RestResponse<Player> registerPlayer(String username) {
         return success(playerService.create(username));
+    }
+
+    public RestResponse<Player> getBy(UUID uuid) {
+        return success(playerService.getBy(uuid));
     }
 
 }

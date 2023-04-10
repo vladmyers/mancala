@@ -33,6 +33,10 @@ public class PlayerService {
         return uuidToPlayerMap.containsKey(uuid);
     }
 
+    public Player getBy(UUID uuid) {
+        return uuidToPlayerMap.get(uuid);
+    }
+
     public void deleteBy(UUID uuid) {
         uuidToPlayerMap.remove(uuid);
     }
