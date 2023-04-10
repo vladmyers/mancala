@@ -4,8 +4,10 @@ import com.bol.mancala.model.GameSession;
 import com.bol.mancala.model.WaitingRoom;
 import com.bol.mancala.type.WaitingRoomState;
 import com.bol.mancala.util.LocalDateTimeUtil;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Game Session service
  */
+@Validated
 @AllArgsConstructor
 @Service
 public class GameSessionService {
@@ -23,7 +26,7 @@ public class GameSessionService {
 
     private final Map<UUID, GameSession> uuidToGameSessionMap = new ConcurrentHashMap<>();
 
-    public GameSession createOrJoinBy(UUID waitingRoomUuid) {
+    public GameSession createOrJoinBy(@NotNull UUID waitingRoomUuid) {
         validateWaitingRoomExistsBy(waitingRoomUuid);
 
         //TODO: add to waitingRoom gameSessionUuid and get it here
@@ -57,16 +60,16 @@ public class GameSessionService {
         return gameSession;
     }
 
-    public GameSession getBy(UUID uuid) {
-        return Optional.ofNullable(uuidToGameSessionMap.get(uuid)).orElseThrow(
-                () -> new IllegalArgumentException("Game Session was not found"));
+    public GameSession getBy(@NotNull UUID uuid) {
+        return Optional.ofNullable(uuidToGameSessionMap.get(uuid))
+                .orElseThrow(() -> new IllegalArgumentException("Game Session was not found"));
     }
 
-    public boolean existBy(UUID uuid) {
+    public boolean existBy(@NotNull UUID uuid) {
         return uuidToGameSessionMap.containsKey(uuid);
     }
 
-    public void finishBy(UUID uuid, GameSession gameSession) {
+    public void finishBy(@NotNull UUID uuid, GameSession gameSession) {
         validateGameSessionExistsBy(uuid);
         validateGameSessionToFinish(uuid, gameSession);
 
@@ -77,13 +80,13 @@ public class GameSessionService {
         uuidToGameSessionMap.replace(uuid, gameSession);
     }
 
-    private void validateWaitingRoomExistsBy(UUID uuid) {
+    private void validateWaitingRoomExistsBy(@NotNull UUID uuid) {
         if (!waitingRoomService.existsBy(uuid)) {
             throw new IllegalArgumentException("Waiting Room was not found");
         }
     }
 
-    private void validateGameSessionToFinish(UUID uuid, GameSession gameSession) {
+    private void validateGameSessionToFinish(@NotNull UUID uuid, @NotNull GameSession gameSession) {
         if (!uuid.equals(gameSession.getUuid())) {
             throw new IllegalArgumentException("Provided uuid differs with the Game Session uuid");
         }
@@ -97,13 +100,13 @@ public class GameSessionService {
         }
     }
 
-    private void validateGameSessionExistsBy(UUID uuid) {
+    private void validateGameSessionExistsBy(@NotNull UUID uuid) {
         if (!existBy(uuid)) {
             throw new IllegalArgumentException("Game Session was not found");
         }
     }
 
-    private static void validateWaitingRoom(WaitingRoom waitingRoom) {
+    private static void validateWaitingRoom(@NotNull WaitingRoom waitingRoom) {
         if (waitingRoom.getJoinedPlayerUuid() == null) {
             throw new IllegalStateException("joinedPlayerUuid is required");
         }

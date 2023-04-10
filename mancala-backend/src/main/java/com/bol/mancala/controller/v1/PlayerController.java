@@ -17,14 +17,10 @@ import static com.bol.mancala.exception.RestResponse.success;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(PlayerApi.URL_API_GAME_V1)
+@RequestMapping(PlayerApi.URL_API_PLAYER_V1)
 public class PlayerController implements PlayerApi {
 
     private final PlayerService playerService;
-
-    public RestResponse<Set<Player>> getAll() {
-        return success(playerService.getAll());
-    }
 
     public RestResponse<Player> registerPlayer(String username) {
         return success(playerService.create(username));
@@ -32,6 +28,10 @@ public class PlayerController implements PlayerApi {
 
     public RestResponse<Player> getBy(UUID uuid) {
         return success(playerService.getBy(uuid));
+    }
+
+    public RestResponse<Set<Player>> getAll() {
+        return success(playerService.getAll());
     }
 
 }

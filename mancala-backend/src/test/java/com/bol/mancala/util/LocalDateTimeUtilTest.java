@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests for {@link LocalDateTimeUtil}
+ */
 class LocalDateTimeUtilTest {
 
     private static final LocalDateTime datetime = LocalDateTime.of(2023, 4, 1, 10, 0);
