@@ -27,7 +27,7 @@ public class WaitingRoomController implements WaitingRoomApi {
         return success(waitingRoomService.joinOrCreateFor(playerUuid));
     }
 
-    public RestResponse<WaitingRoom> get(UUID uuid) {
+    public RestResponse<WaitingRoom> getBy(UUID uuid) {
         return success(waitingRoomService.getBy(uuid));
     }
 

@@ -52,7 +52,7 @@ const WaitingRoom = () => {
     const pollForGameStart = () => {
         const id = setInterval(() => {
             if (waitingRoomDto?.uuid) {
-                waitingRoomService.get(waitingRoomDto.uuid).then((response) => {
+                waitingRoomService.getBy(waitingRoomDto.uuid).then((response) => {
                     setWaitingRoomDto(() => {return response.result});
                 });
             }

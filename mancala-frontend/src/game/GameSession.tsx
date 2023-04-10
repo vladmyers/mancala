@@ -24,10 +24,8 @@ const GameSession = () => {
     React.useEffect(() => {
         const gameSessionUuid = sessionStorage.getItem('gameSessionUuid');
         if (gameSessionUuid) {
-            gameSessionService.get(gameSessionUuid).then((response) => {
-                setGameSession(() => {
-                    return response.result
-                });
+            gameSessionService.getBy(gameSessionUuid).then((response) => {
+                setGameSession(() => {return response.result});
             });
             return;
         }
@@ -39,7 +37,7 @@ const GameSession = () => {
         }
 
         gameSessionService
-            .create(waitingRoomUuid)
+            .startBy(waitingRoomUuid)
             .then((response: RestResponse<GameSessionDto>) => {
                 if (response.result) {
                     setGameSession(() => {
@@ -79,7 +77,7 @@ const GameSession = () => {
     const pollForGameSessionState = () => {
         const id = setInterval(() => {
             if (gameSession?.uuid) {
-                gameSessionService.get(gameSession.uuid).then((response) => {
+                gameSessionService.getBy(gameSession.uuid).then((response) => {
                     setGameSession(() => {
                         return response.result
                     });
@@ -97,10 +95,8 @@ const GameSession = () => {
         if (gameSession) {
             gameSession.left = true
             gameSession.playerLeftUuid = sessionStorage.getItem('playerUuid')!;
-            gameSessionService.finish(gameSession?.uuid, gameSession);
-            setGameSession(() => {
-                return undefined
-            });
+            gameSessionService.finishBy(gameSession?.uuid, gameSession);
+            setGameSession(() => {return undefined});
             clearInterval(intervalId);
             sessionStorage.removeItem('gameSessionUuid');
             navigate("/");
