@@ -4,6 +4,12 @@
 
 * [Intro]
   * [About the game]
+  * [Project Scope and Limitations]
+    * [Scope]
+    * [Objectives]
+    * [Limitations]
+    * [Project Status]
+    * [Ideas]
 * [How to run]
   * [Easy Way]
   * [Build Manually]
@@ -42,6 +48,54 @@ The objective of the game is to capture more seeds than the opponent by collecti
    their opponent's side of the board and add them to their own mancala
 5. The game ends when one player has no more stones on their side of the board
 6. The player with the most stones in their mancala at the end of the game wins
+
+## Project Scope and Limitations
+
+### Scope
+
+The scope of this project is to develop a Mancala game.
+The game will have a Waiting Room feature, which allows multiple players to join the game and wait for a new game session to start.
+Once the game session starts, the players will be paired and the game will begin.
+
+### Objectives
+1. To develop a Waiting Room feature that allows players to enter their names and join the waiting room to wait for a match and start 
+   the game. The feature should also allow players to leave a certain waiting room.
+2. To develop a Game Session feature that allows two connected and matched players to start playing the game. The feature should also 
+   allow players to leave a game session, and notify them if their opponent has left the game.  
+3. To support parallel game sessions, so that more than one game session can be played simultaneously.
+4. To inform players of any errors that occur, and provide them with details such as player's registration result, waiting room ID, 
+   created date and time, state, opponent player's name, etc.
+
+### Limitations
+The following are the limitations of this project:
+1. The game will only be playable on desktop and laptop devices, and it will not be optimized for mobile devices.
+2. The game will have basic styling and will not have any advanced graphics or animation.
+3. The game will not have an AI opponent, and it will only be playable in multiplayer mode.
+4. The game will not have a tutorial section, and it will assume that players already know how to play Mancala.
+5. The game will not have any database integration, and the game data will not be stored in any database.
+6. The game will not have any social media integration, and there will be no option to share the game on social media platforms.
+7. The Waiting Room feature will be implemented on the backend, but there will be no authentication and authorization mechanism for players.
+8. The simultaneous Game Sessions feature will be implemented on the backend, but there will be no persistence of data after the backend is restarted.
+9. The Mancala game will start when players are matched in the Waiting Room.
+
+### Project Status
+1. Game Session: The player's moves are not being synchronized for now. Players are able to play on the same page one by one
+2. Multiplayer Feature: The Mancala game is implemented only on the client (frontend) for now. The multiplayer game feature is
+   considered as the goal and to be implemented on the backend with player's moves synchronization.
+3. Unit Testing: Unit tests are intended to be implemented for all the backend classes and methods. However, there are a few tests for methods in such classes as GlobalExceptionHandler, LocalDateTimeUtil, WaitingRoomService, PlayerController and GameSessionController
+4. Frontend Unit Testing: Unit tests are intended to be implemented on the frontend methods containing any logic. Especially for the 
+   temporary game implementation on the client until logic is moved to the backend. Also, the testing strategy for the frontend contains 
+   an intention to test UI elements are being processed as expected using, e.g. React Testing Library
+
+### Ideas
+1. Allow players to choose the number of initial stones per pit
+2. Allow players to choose the number of pits per player
+3. Allow players to move in a clockwise direction instead of counterclockwise
+4. Implement a timer for each player's turn
+5. Implement a "hint" button to suggest a good move for the current player
+6. Allow players to customize the game board
+7. Implement a tutorial or help system to teach new players how to play
+8. Gather and show stats after game is finished such as moves count, opponents' captured stones, etc 
 
 # How to run
 
@@ -137,6 +191,12 @@ This project is licensed under the Apache License 2.0. See the [LICENSE] file fo
 [Build modules separately]: #build-modules-separately
 [Easy Way]: #easy-way
 [Usage]: #usage
+[Project Scope and Limitations]: #project-scope-and-limitations
+[Scope]: #scope
+[Objectives]: #objectives
+[Limitations]: #limitations
+[Project Status]: #project-status
+[Ideas]: #ideas
 [OpenAPI Specification]: #openapi-specification
 [Tech stack]: #tech-stack
 [Common - across all modules]: #common---across-all-modules
