@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mancala-backend:
-    image: vladcares/mancala-backend:0.0.2
+    image: vladcares/mancala-backend:0.0.3
     build:
       context: mancala-backend
       dockerfile: Dockerfile
@@ -11,7 +11,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
   mancala-frontend:
-    image: vladcares/mancala-frontend:0.0.2
+    image: vladcares/mancala-frontend:0.0.3
     build:
       context: mancala-frontend
       dockerfile: Dockerfile

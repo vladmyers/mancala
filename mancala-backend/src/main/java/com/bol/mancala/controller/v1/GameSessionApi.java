@@ -34,8 +34,8 @@ public interface GameSessionApi {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @PostMapping(value = "/{waitingRoomUuid}", produces = APPLICATION_JSON_VALUE)
-    RestResponse<GameSession> start(@Parameter(description = "Waiting Room uuid", required = true)
-               @PathVariable("waitingRoomUuid") UUID waitingRoomUuid);
+    RestResponse<GameSession> startBy(@Parameter(description = "Waiting Room uuid", required = true)
+                                      @PathVariable("waitingRoomUuid") UUID waitingRoomUuid);
 
     @Operation(summary = "Returns game session by its uuid")
     @ApiResponses(value = {
@@ -43,8 +43,8 @@ public interface GameSessionApi {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @GetMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
-    RestResponse<GameSession> get(@Parameter(description = "Game Session uuid", required = true)
-               @PathVariable("uuid") UUID uuid);
+    RestResponse<GameSession> getBy(@Parameter(description = "Game Session uuid", required = true)
+                                    @PathVariable("uuid") UUID uuid);
 
     @Operation(summary = "Finishes game session")
     @ApiResponses(value = {
@@ -52,7 +52,7 @@ public interface GameSessionApi {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @PutMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
-    RestResponse<Void> finish(
+    RestResponse<Void> finishBy(
             @Parameter(description = "Game Session uuid", required = true)
             @PathVariable("uuid") UUID uuid,
             @Parameter(description = "Game Session", required = true)

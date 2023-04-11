@@ -21,15 +21,15 @@ public class GameSessionController implements GameSessionApi {
 
     private final GameSessionService gameSessionService;
 
-    public RestResponse<GameSession> start(UUID waitingRoomUuid) {
+    public RestResponse<GameSession> startBy(UUID waitingRoomUuid) {
         return success(gameSessionService.createOrJoinBy(waitingRoomUuid));
     }
 
-    public RestResponse<GameSession> get(UUID uuid) {
+    public RestResponse<GameSession> getBy(UUID uuid) {
         return success(gameSessionService.getBy(uuid));
     }
 
-    public RestResponse<Void> finish(UUID uuid, GameSession gameSession) {
+    public RestResponse<Void> finishBy(UUID uuid, GameSession gameSession) {
         gameSessionService.finishBy(uuid, gameSession);
         return success();
     }

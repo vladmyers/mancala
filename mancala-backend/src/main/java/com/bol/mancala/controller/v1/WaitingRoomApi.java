@@ -41,19 +41,19 @@ public interface WaitingRoomApi {
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
     @GetMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
-    RestResponse<WaitingRoom> get(@Parameter(description = "Waiting Room uuid", required = true)
-                                  @PathVariable UUID uuid);
+    RestResponse<WaitingRoom> getBy(@Parameter(description = "Waiting Room uuid", required = true)
+                                    @PathVariable UUID uuid);
 
     @Operation(summary = "Closes Waiting Room by its uuid")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad Request")
     })
-    @DeleteMapping(value = "/{uuid}/{waitingRoomState}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{uuid}/{state}", produces = APPLICATION_JSON_VALUE)
     RestResponse<Void> changeState(@Parameter(description = "Waiting Room uuid", required = true)
                                    @PathVariable UUID uuid,
                                    @Parameter(description = "Waiting Room state", required = true)
-                                   @PathVariable WaitingRoomState waitingRoomState);
+                                   @PathVariable WaitingRoomState state);
 
     @Operation(summary = "Returns all Waiting Rooms")
     @ApiResponses(value = {

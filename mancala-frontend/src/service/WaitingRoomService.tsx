@@ -14,7 +14,7 @@ export default class WaitingRoomService {
         return postData(`${WaitingRoomService.URI_V1}/${playerUuid}`);
     }
 
-    get(uuid: string): Promise<RestResponse<WaitingRoomDto>> {
+    getBy(uuid: string): Promise<RestResponse<WaitingRoomDto>> {
         return getResource(`${WaitingRoomService.URI_V1}/${uuid}`)
     }
 

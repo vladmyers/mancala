@@ -2,10 +2,12 @@ import React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {ServiceLocator} from '../service/ServiceLocator';
 import GameSessionService from '../service/GameSessionService';
+import PlayerService from "../service/PlayerService";
 import {AxiosError, AxiosResponse} from 'axios';
 import {RestResponseError} from '../api/RestResponseError';
 import {RestResponse} from '../api/RestResponse';
 import {GameSessionDto} from "../dto/GameSessionDto";
+import {PlayerDto} from "../dto/PlayerDto";
 
 import Header from '../component/Header';
 import Body from '../component/Body';
@@ -15,19 +17,29 @@ import "./GameSession.css"
 
 const GameSession = () => {
     const navigate = useNavigate();
+
     const gameSessionService: GameSessionService = ServiceLocator.get('gameSessionService')!;
+    const playerService: PlayerService = ServiceLocator.get('playerService')!;
+
+    const playerUuid = sessionStorage.getItem('playerUuid');
+    const playerUsername = sessionStorage.getItem('playerUsername');
+    const gameSessionUuid = sessionStorage.getItem('gameSessionUuid');
 
     const [errorMessage, setErrorMessage] = React.useState('');
     const [gameSession, setGameSession] = React.useState<GameSessionDto>();
+    const [playerOne, setPlayerOne] = React.useState<PlayerDto>();
+    const [playerTwo, setPlayerTwo] = React.useState<PlayerDto>();
     const [intervalId, setIntervalId] = React.useState<NodeJS.Timer>();
 
     React.useEffect(() => {
-        const gameSessionUuid = sessionStorage.getItem('gameSessionUuid');
+        if (!playerUuid || !playerUsername) {
+            navigate('/register');
+            return;
+        }
+
         if (gameSessionUuid) {
-            gameSessionService.get(gameSessionUuid).then((response) => {
-                setGameSession(() => {
-                    return response.result
-                });
+            gameSessionService.getBy(gameSessionUuid).then((response) => {
+                setGameSession(() => {return response.result});
             });
             return;
         }
@@ -39,12 +51,10 @@ const GameSession = () => {
         }
 
         gameSessionService
-            .create(waitingRoomUuid)
+            .startBy(waitingRoomUuid)
             .then((response: RestResponse<GameSessionDto>) => {
                 if (response.result) {
-                    setGameSession(() => {
-                        return response.result
-                    });
+                    setGameSession(() => {return response.result});
                     sessionStorage.removeItem('waitingRoomUuid');
                 }
             })
@@ -62,11 +72,30 @@ const GameSession = () => {
         if (gameSession?.uuid && !intervalId) {
             pollForGameSessionState();
         }
+
+        if (!playerOne && gameSession?.playerOneUuid) {
+            playerService.getBy(gameSession.playerOneUuid)
+                .then((response: RestResponse<PlayerDto>) => {
+                if (response.result) {
+                    setPlayerOne(() => {return response.result});
+                }
+            })
+        }
+
+        if (!playerTwo && gameSession?.playerTwoUuid) {
+            playerService.getBy(gameSession.playerTwoUuid)
+                .then((response: RestResponse<PlayerDto>) => {
+                if (response.result) {
+                    setPlayerTwo(() => {return response.result});
+                }
+            })
+        }
     }, [gameSession]);
 
     React.useEffect(() => {
         if (gameSession?.left && gameSession.playerLeftUuid != sessionStorage.getItem('playerUuid')) {
             clearInterval(intervalId);
+            sessionStorage.removeItem('gameSessionUuid');
             alert('Another player has left the game');
         }
     }, [gameSession?.left]);
@@ -78,7 +107,7 @@ const GameSession = () => {
     const pollForGameSessionState = () => {
         const id = setInterval(() => {
             if (gameSession?.uuid) {
-                gameSessionService.get(gameSession.uuid).then((response) => {
+                gameSessionService.getBy(gameSession.uuid).then((response) => {
                     setGameSession(() => {
                         return response.result
                     });
@@ -96,11 +125,10 @@ const GameSession = () => {
         if (gameSession) {
             gameSession.left = true
             gameSession.playerLeftUuid = sessionStorage.getItem('playerUuid')!;
-            gameSessionService.finish(gameSession?.uuid, gameSession);
-            setGameSession(() => {
-                return undefined
-            });
+            gameSessionService.finishBy(gameSession?.uuid, gameSession);
+            setGameSession(() => {return undefined});
             clearInterval(intervalId);
+            sessionStorage.removeItem('gameSessionUuid');
             navigate("/");
         }
     };
@@ -122,9 +150,11 @@ const GameSession = () => {
                     {!errorMessage && gameSession && (
                         <div>
                             <div>Game session UUID: {gameSession.uuid}</div>
-                            <div>Created date: {new Date(gameSession.createdDateTime).toLocaleString(navigator.language)}</div>
-                            <div>Player 1: {gameSession.playerOneUuid}</div>
-                            <div>Player 2: {gameSession.playerTwoUuid}</div>
+                            <div>Created date and time: {new Date(gameSession.createdDateTime).toLocaleString(navigator.language)}</div>
+                            <div>Player 1: {playerOne?.username}</div>
+                            <div>Player 2: {playerTwo?.username}</div>
+                            <div>Player 1 UUID: {playerOne?.uuid}</div>
+                            <div>Player 2 UUID: {playerTwo?.uuid}</div>
                         </div>
                     )}
                     {errorMessage && (

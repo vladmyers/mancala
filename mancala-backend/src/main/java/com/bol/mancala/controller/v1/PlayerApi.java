@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,15 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Tag(name = "Player", description = "Player Controller")
 public interface PlayerApi {
 
-    String URL_API_GAME_V1 = "/api/v1/players";
-
-    @Operation(summary = "Returns all players")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(responseCode = "400", description = "Bad Request")
-    })
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    RestResponse<Set<Player>> getAll();
+    String URL_API_PLAYER_V1 = "/api/v1/players";
 
     @Operation(summary = "Registers new player and returns his profile")
     @ApiResponses(value = {
@@ -38,6 +31,23 @@ public interface PlayerApi {
     })
     @PostMapping(value = "/{username}", produces = APPLICATION_JSON_VALUE)
     RestResponse<Player> registerPlayer(@Parameter(description = "Username", required = true)
-                        @PathVariable("username") String username);
+                                        @PathVariable("username") String username);
+
+    @Operation(summary = "Returns player by uuid")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @GetMapping(value = "/{uuid}", produces = APPLICATION_JSON_VALUE)
+    RestResponse<Player> getBy(@Parameter(description = "Player uuid", required = true)
+                               @PathVariable("uuid") UUID uuid);
+
+    @Operation(summary = "Returns all players")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "400", description = "Bad Request")
+    })
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    RestResponse<Set<Player>> getAll();
 
 }

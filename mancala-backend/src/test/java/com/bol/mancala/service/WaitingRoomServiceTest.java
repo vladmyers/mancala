@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tests for {@link WaitingRoomService}
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 class WaitingRoomServiceTest {
@@ -36,6 +39,7 @@ class WaitingRoomServiceTest {
     private UUID playerUuid1, playerUuid2, playerUuid3;
     private UUID waitingRoomUuid1, waitingRoomUuid2;
 
+    /** Adds test objects */
     @BeforeAll
     void beforeAll() {
         playerUuid1 = playerService.create("user1").getUuid();
@@ -45,6 +49,7 @@ class WaitingRoomServiceTest {
         waitingRoomUuid2 = waitingRoomService.createFor(playerUuid3).getUuid();
     }
 
+    /** Cleanup after tests */
     @AfterAll
     void afterAll() {
         playerService.deleteBy(playerUuid1);

@@ -13,11 +13,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Tests for {@link GlobalExceptionHandler}
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class GlobalExceptionHandlerTest {
 
-    private static final String URI = PlayerApi.URL_API_GAME_V1;
+    private static final String URI = PlayerApi.URL_API_PLAYER_V1;
 
     @Autowired
     private MockMvc mockMvc;

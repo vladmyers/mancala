@@ -13,7 +13,11 @@ export default class PlayerService {
         return postData(`${PlayerService.URI_V1}/${username}`);
     }
 
-    get(): Promise<RestResponse<PlayerDto[]>> {
+    getBy(uuid: string): Promise<RestResponse<PlayerDto>> {
+        return getResource(`${PlayerService.URI_V1}/${uuid}`)
+    }
+
+    getAll(): Promise<RestResponse<PlayerDto[]>> {
         return getResource(PlayerService.URI_V1)
     }
 
